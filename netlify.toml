@@ -1,0 +1,5 @@
+[build]
+  functions = "built-lambda"
+
+[build.environment]
+  JWT_SECRET_KEY = "***REMOVED***"
