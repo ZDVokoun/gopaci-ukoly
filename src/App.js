@@ -1,24 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
+import { Login } from './pages/login';
+import Sidebar from './components/sidebar';
+import { PrivateRoute } from "./components/privateroute";
+import { Homeworks } from './pages/homeworks';
+import { Homework } from './pages/homework';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/login" exact component={Login} />
+        <div id="main">
+          <Sidebar/>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="/homeworks"/>
+            </Route>
+            <PrivateRoute path="/homeworks" exact component={Homeworks}/>
+            <Route exact path="/homework">
+              <Redirect to="/homeworks"/>
+            </Route>
+            <PrivateRoute path="/homework/:id" component={() => <Homework/>}/>
+            <Route component={() => <h1>404 Not Found</h1>} />
+          </Switch>
+        </div>
+        
+      </Switch>
+    </Router>
   );
 }
 

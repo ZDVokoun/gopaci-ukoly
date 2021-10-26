@@ -36,3 +36,78 @@
     transform: rotate(360deg);
   }
 }
+
+#root {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+#main {
+  display: flex;
+  width: 100%;
+}
+
+#homeworks {
+  width:80%;
+  margin:10px 50px;
+}
+
+.dateInput {
+  margin-top: 20px;
+}
+
+#login {
+  padding: 10px;
+  text-align: center;
+  height: fit-content;
+  align-self: center;
+  margin-bottom: 50px;
+  box-shadow: #0000003a 0px 0px 2px;
+}
+
+@media screen and (min-aspect-ratio:1/1) {
+  #login {
+    width: 25vw;
+  }
+  #homeworks {
+    max-height: 90vh;
+  }
+  .homework {
+    max-width: 50%;
+  }
+}
+@media screen and (max-aspect-ratio:1/1) {
+  #login {
+    width: 90vw;
+  }
+  #homeworks {
+    margin: 0px 10px;
+  }
+  .homework {
+    max-width: 80%;
+  }
+}
+#login > div, #login > button {
+  margin: 10px 0px;
+}
+#addHomework {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  z-index: 4;
+}
+img {
+  max-width: 100%;
+}
+.commentAuthor {
+  margin-bottom: 5px;
+}
+.comment {
+  padding: 2%;
+  margin: 2% 0px;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-column-gap: 1%;
+}

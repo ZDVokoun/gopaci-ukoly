@@ -34,26 +34,31 @@ function toUsername(string) {
     return `${surname}.${name[0]}`.toLowerCase();
 }
 
-const names = [
-    "Ondřej Sedláček"
+const userList = [
+    {name: "Ondřej Sedláček", groups: ["Aj2", "S1", "whole", "Hv", "Nj"]},
+    {name: "Tereza Korčeková", groups: ["Aj1", "S1", "whole", "Vv", "Fj"]},
+    {name: "Vít Stružka", groups: ["Aj2", "S2", "whole", "Hv", "Nj"]},
+    {name: "Matyáš Urban", groups: ["Aj2", "S1", "whole", "Hv", "Fj"]},
 ];
 
-const dbClient = createClient();
+const dbClient = createClient(`***REMOVED***`);
 try {
     let generated = [];
     await dbClient.connect();
     const users = dbClient.usersCollection();
-    for (let user of names) {
-        const username = toUsername(user);
+    for (let user of userList) {
+        const username = toUsername(user.name);
         const existingUser = await users.findOne({ username });
         if (existingUser !== null) continue;
         const password = generatePassword(12, false);
         const passwordHash = await bcrypt.hash(password, 10);
-        const { insertedId } = await users.insertOne({
+        const insertion = await users.insertOne({
             username,
-            password: passwordHash
+            user: user.name,
+            password: passwordHash,
+            groups: user.groups
         })
-        generated.push({id: insertedId, name: user, username, password});
+        generated.push(Object.assign(insertion, {password, user: user.name}));
     }
     console.log(JSON.stringify(generated));
 } catch (err) {

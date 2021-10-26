@@ -3,6 +3,13 @@ import bcrypt from "bcryptjs";
 import { createJwtCookie } from "../helpers/jwt-helper";
 
 export async function handler(event) {
+    if (event.httpMethod != "POST") {
+        return {
+            statusCode: 400,
+            body: JSON.stringify("Bad Request")
+        }
+    }
+
     const dbClient = createClient();
     let errorStatusCode = 500;
     try {
@@ -17,7 +24,7 @@ export async function handler(event) {
                 "error": "Bad username",
                 "IP": event.headers["client-ip"],
                 "user-agent": event.headers["user-agent"],
-                "timestamp": Date.now()
+                "time": new Date()
             });
             errorStatusCode = 401;
             throw new Error("Invalid password or username");
@@ -30,7 +37,7 @@ export async function handler(event) {
                 username,
                 "IP": event.headers["client-ip"],
                 "user-agent": event.headers["user-agent"],
-                "timestamp": Date.now()
+                "time": new Date()
             });
             errorStatusCode = 401;
             throw new Error("Invalid password or username");
@@ -43,7 +50,7 @@ export async function handler(event) {
             username,
             "IP": event.headers["client-ip"],
             "user-agent": event.headers["user-agent"],
-            "timestamp": Date.now()
+            "time": new Date()
         });
 
         return {
@@ -57,7 +64,7 @@ export async function handler(event) {
     } catch (err) {
         return {
             statusCode: errorStatusCode,
-            body: JSON.stringify({msg: err.message, input: event.body})
+            body: JSON.stringify({msg: err.message, input: event})
         }
     } finally {
         dbClient.close();
