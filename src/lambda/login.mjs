@@ -22,7 +22,7 @@ export async function handler(event) {
             await logins.insertOne({
                 "successful": false,
                 "error": "Bad username",
-                "IP": event.headers["client-ip"],
+                "IP": event.headers["x-bb-ip"],
                 "user-agent": event.headers["user-agent"],
                 "time": new Date()
             });
@@ -35,7 +35,7 @@ export async function handler(event) {
                 "successful": false,
                 "error": "Bad password",
                 username,
-                "IP": event.headers["client-ip"],
+                "IP": event.headers["x-bb-ip"],
                 "user-agent": event.headers["user-agent"],
                 "time": new Date()
             });
@@ -48,7 +48,7 @@ export async function handler(event) {
         await logins.insertOne({
             "successful": true,
             username,
-            "IP": event.headers["client-ip"],
+            "IP": event.headers["x-bb-ip"],
             "user-agent": event.headers["user-agent"],
             "time": new Date()
         });
