@@ -3,3 +3,4 @@
 
 [build.environment]
   JWT_SECRET_KEY = "***REMOVED***"
+  MONGODB_PASSWORD = "***REMOVED***"
