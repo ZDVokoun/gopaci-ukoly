@@ -4,3 +4,7 @@
 [build.environment]
   JWT_SECRET_KEY = "***REMOVED***"
   MONGODB_PASSWORD = "***REMOVED***"
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
