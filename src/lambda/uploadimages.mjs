@@ -1,6 +1,5 @@
 import { createClient } from "../helpers/db-helper.mjs";
 import { jwtExtract } from "../helpers/jwt-helper.mjs";
-import { parseMultipartForm } from "../helpers/multipart-helper.mjs";
 
 export async function handler(event) {
     let errorStatusCode = 500;

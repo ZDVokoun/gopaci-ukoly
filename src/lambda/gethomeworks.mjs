@@ -19,6 +19,7 @@ export async function handler(event) {
             throw new Error("Unauthorized");
         }
         const username = payload.username;
+        console.log(event);
 
         await dbClient.connect();
         const homeworks = dbClient.homeworksCollection();
