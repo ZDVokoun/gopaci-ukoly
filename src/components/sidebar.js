@@ -9,7 +9,7 @@ function Sidebar(props) {
     const { logout } = useAuth();
     const logoutHandle = event => {
         event.preventDefault();
-        logout();
+        logout().catch(error => alert(error));
         setOpen(false);
     }
     const handleRedirect = event => {
@@ -29,13 +29,16 @@ function Sidebar(props) {
                     <ListItem button name="homeworks" onClick={handleRedirect}>
                         <ListItemText primary="Domácí úkoly" />
                     </ListItem>
+                    <ListItem button name="settings" onClick={handleRedirect}>
+                        <ListItemText primary="Nastavení" />
+                    </ListItem>
                 </List>)
     return (<div id="sidebar">
-            <Drawer variant="permanent" sx={{width: 200, display: { xs: 'none', sm: 'block' }}}>
+            <Drawer variant="permanent" sx={{width: 150, display: { xs: 'none', sm: 'block' }}}>
                 {items}
             </Drawer>
             <Fab variant="rectangular" aria-label="open" sx={{display: {sm: "none"}, margin: 1}} onClick={() => setOpen(true)}><MenuIcon/></Fab>
-            <Drawer open={open} onClose={() => setOpen(false)} sx={{width: 200, display: { xs: 'block', sm: 'none' }}}>
+            <Drawer open={open} onClose={() => setOpen(false)} sx={{width: 150, display: { xs: 'block', sm: 'none' }}}>
                 {items}
             </Drawer>
             {redirect ? <Redirect to={redirect}/> : null}

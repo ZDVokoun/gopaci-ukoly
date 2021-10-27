@@ -5,7 +5,6 @@ function AuthProvider({ children }) {
     const localUserJson = localStorage.getItem("user")
     const localUser = localUserJson && JSON.parse(localUserJson)
     const [user, setUser] = useState(localUser)
-    const [redirectLink, setRedirectLink] = useState("");
     const saveUser = user => {
         setUser(user)
         localStorage.setItem("user", JSON.stringify(user))
@@ -14,12 +13,12 @@ function AuthProvider({ children }) {
         setUser(null)
         localStorage.removeItem("user")
     }
-    const signup = user => sendRequest("signup", user).then(body => saveUser(body)).catch(error => alert(error));
-    const login = user => sendRequest("login", user).then(body => saveUser(body)).catch(error => alert(error));
-    const logout = () => sendRequest("logout", undefined).then(() => deleteUser()).catch(error => alert(error));
+    const login = user => sendRequest("login", user).then(body => saveUser(body));
+    const logout = () => sendRequest("logout", undefined).then(() => deleteUser());
+    const changePassword = (password, newPassword) => sendRequest("changepassword", {password, newPassword}).then(() => logout());
     
     return (
-        <AuthContext.Provider value={{ user, signup, login, logout, redirectLink, setRedirectLink }}>
+        <AuthContext.Provider value={{ user, login, logout, changePassword }}>
         {children}
         </AuthContext.Provider>
     );

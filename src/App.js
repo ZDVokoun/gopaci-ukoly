@@ -6,6 +6,7 @@ import { PrivateRoute } from "./components/privateroute";
 import { Homeworks } from './pages/homeworks';
 import { Homework } from './pages/homework';
 import { NotFound } from './pages/error';
+import { Settings } from './pages/settings';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Redirect to="/homeworks"/>
             </Route>
             <PrivateRoute path="/homework/:id" component={Homework}/>
+            <PrivateRoute path="/settings" component={Settings}/>
             <Route component={NotFound} />
           </Switch>
         </div>
