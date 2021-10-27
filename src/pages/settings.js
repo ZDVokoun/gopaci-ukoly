@@ -37,5 +37,7 @@ function NewPasswordForm() {
 }
 
 export function Settings(props) {
-    return <NewPasswordForm/>
+    return (<div>
+        <NewPasswordForm/>
+        </div>)
 }
