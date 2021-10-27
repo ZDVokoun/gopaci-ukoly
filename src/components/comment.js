@@ -105,6 +105,7 @@ export function AddComment (props) {
         <TextField
             label="Komentář *"
             fullWidth
+            required
             multiline 
             value={input.msg}
             sx={Object.assign(dragOver ? {'& .MuiOutlinedInput-root fieldset': {borderColor: "blue"}}: {}, {marginTop: 1})}

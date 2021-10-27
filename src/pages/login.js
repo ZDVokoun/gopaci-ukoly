@@ -3,14 +3,16 @@ import { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { Button, Card, TextField } from "@mui/material";
 
-export function Login() {
-    const { user, login, redirectLink } = useAuth();
+export function Login(props) {
+    const { user, login } = useAuth();
+    const prevPath = props.location.state && props.location.state.prevPath;
+    const redirectTo = prevPath || "/";
     const [ username, setUsername ] = useState("");
     const [ password, setPassword ] = useState("");
     const handleSubmit = () => {
-        login({username, password});
+        login({username, password}).catch(error => alert(error));
     }
-    return user ? <Redirect to={redirectLink} /> : (
+    return user ? <Redirect to={redirectTo} /> : (
         <Card
             id="login"
             variant="outlined"

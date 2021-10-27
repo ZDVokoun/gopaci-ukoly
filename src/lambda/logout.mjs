@@ -6,6 +6,6 @@ export async function handler() {
             "Set-Cookie": clearCookie(),
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message: "Logged out successfully" })
+        body: JSON.stringify({ msg: "Logged out successfully" })
     }
 }

@@ -65,7 +65,7 @@
   box-shadow: #0000003a 0px 0px 2px;
 }
 
-@media screen and (min-aspect-ratio:1/1) {
+@media screen and (min-aspect-ratio:3/2) {
   #login {
     width: 25vw;
   }
@@ -75,8 +75,12 @@
   .homework {
     max-width: 50%;
   }
+  #sidebar > div {
+    width: 200px;
+  }
+
 }
-@media screen and (max-aspect-ratio:1/1) {
+@media screen and (max-aspect-ratio:3/2) {
   #login {
     width: 90vw;
   }
@@ -93,7 +97,7 @@
     z-index: 5;
   }
 }
-#login > div, #login > button {
+#login > div, #login > button, #newPassword > div, #newPassword > button {
   margin: 10px 0px;
 }
 #addHomework {
