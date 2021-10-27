@@ -23,17 +23,25 @@ export async function handler(event) {
         await dbClient.connect();
         const homeworks = dbClient.homeworksCollection();
         const users = dbClient.usersCollection();
+        const subjects = dbClient.subjectsCollection();
         const comments = dbClient.commentsCollection();
         let data = [];
         
         if (event.queryStringParameters.id) {
             const id = event.queryStringParameters.id;
+
+            const rawData = await homeworks.findOne({_id: new ObjectId(id)})
+            if (!rawData) {
+                errorStatusCode = 404;
+                throw new Error("Not Found");
+            }
+
             const userList = await users.find({}, {username: 1, user: 1}).toArray();
             const homeworkComments = (await comments.find({homework: id}).toArray())
                 .map(item => Object.assign(item, {userFullName: userList.find(user => item.user === user.username)["user"]}));
-            const rawData = await homeworks.findOne({_id: new ObjectId(id)})
+            const subjectFullName = (await subjects.findOne({shortcut: rawData.subject}, {name: 1})).name
             
-            data = Object.assign(rawData, {userFullName: userList.find(user => rawData.user === user.username)["user"], comments: homeworkComments});
+            data = Object.assign(rawData, {userFullName: userList.find(user => rawData.user === user.username)["user"], subjectFullName, comments: homeworkComments});
         } else {
             const userGroups = (await users.findOne({ username: username })).groups;
             const rawData = await homeworks.find({dueTime : { $gt:new Date() }}).toArray();

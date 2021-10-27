@@ -1,6 +1,6 @@
 import { Redirect, withRouter } from "react-router-dom";
 import { useAuth } from "../providers/auth-provider";
-import { Button, Drawer, IconButton, List, ListItem, ListItemText } from "@mui/material";
+import { Drawer, Fab, List, ListItem, ListItemText } from "@mui/material";
 import { useEffect, useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -10,9 +10,11 @@ function Sidebar(props) {
     const logoutHandle = event => {
         event.preventDefault();
         logout();
+        setOpen(false);
     }
     const handleRedirect = event => {
-        history.push("/" + event.currentTarget.getAttribute("name"))
+        history.push("/" + event.currentTarget.getAttribute("name"));
+        setOpen(false);
     }
     
     const [redirect, setRedirect] = useState();
@@ -28,11 +30,11 @@ function Sidebar(props) {
                         <ListItemText primary="Domácí úkoly" />
                     </ListItem>
                 </List>)
-    return (<div>
+    return (<div id="sidebar">
             <Drawer variant="permanent" sx={{width: 200, display: { xs: 'none', sm: 'block' }}}>
                 {items}
             </Drawer>
-            <IconButton aria-label="open" sx={{display: {sm: "none"}, margin: 1}} onClick={() => setOpen(true)}><MenuIcon/></IconButton>
+            <Fab variant="rectangular" aria-label="open" sx={{display: {sm: "none"}, margin: 1}} onClick={() => setOpen(true)}><MenuIcon/></Fab>
             <Drawer open={open} onClose={() => setOpen(false)} sx={{width: 200, display: { xs: 'block', sm: 'none' }}}>
                 {items}
             </Drawer>

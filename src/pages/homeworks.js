@@ -1,11 +1,12 @@
 import { sendRequest } from "../helpers/http-helper.mjs";
 import React, { useState, useEffect } from "react";
-import { FormControlLabel, Skeleton, Switch } from "@mui/material";
+import { Box, FormControlLabel, Skeleton, Switch } from "@mui/material";
 import { AddHomework } from "../components/addhomework";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { startOfWeek, format, parse, getDay } from "date-fns";
 import { cs } from "date-fns/locale"
 import "react-big-calendar/lib/css/react-big-calendar.css"
+import { Agenda } from "../components/agendaview";
 
 const locales = {
     "cs-CZ": cs
@@ -41,18 +42,21 @@ export function Homeworks (props) {
     }, []);
     useEffect(() => localStorage.setItem("settings", JSON.stringify(settings)), [settings])
 
-    return homeworks === null ? <div><br/><Skeleton variant="text"/><Skeleton variant="text"/><Skeleton variant="text"/></div> : (
+    return homeworks === null ? <div><br/><Skeleton variant="rectangle"/></div> : (
         <div id="homeworks">
-            <Calendar
-                culture="cs-CZ"
-                views={["month"]}
-                localizer={localizer}
-                events={homeworks
-                    .filter(homework => homework.voluntary ? settings.homeworks.showVoluntary : true)
-                    .map(homework => {return {"title": homework.name, "start": new Date(homework.dueTime), end: new Date(homework.dueTime), "allDay": true, resource: homework.id}})
-                }
-                onDoubleClickEvent={homework => props.history.push("/homework/" + homework.resource)}
-            />
+            <Box sx={{display: {xs: "none", sm: "block"}, height: "100%"}}>
+                <Calendar
+                    culture="cs-CZ"
+                    views={["month"]}
+                    localizer={localizer}
+                    events={homeworks
+                        .filter(homework => homework.voluntary ? settings.homeworks.showVoluntary : true)
+                        .map(homework => {return {"title": homework.name, "start": new Date(homework.dueTime), end: new Date(homework.dueTime), "allDay": true, resource: homework.id}})
+                    }
+                    onDoubleClickEvent={homework => props.history.push("/homework/" + homework.resource)}
+                />
+            </Box>
+            <Agenda history={props.history} homeworks={homeworks.filter(homework => homework.voluntary ? settings.homeworks.showVoluntary : true)} sx={{display: { xs: 'block', sm: 'none' }}}/>
             <AddHomework onSubmit={updateList}/>
             <FormControlLabel
                 control={<Switch 
