@@ -5,6 +5,7 @@ import Sidebar from './components/sidebar';
 import { PrivateRoute } from "./components/privateroute";
 import { Homeworks } from './pages/homeworks';
 import { Homework } from './pages/homework';
+import { NotFound } from './pages/error';
 
 function App() {
   return (
@@ -21,11 +22,10 @@ function App() {
             <Route exact path="/homework">
               <Redirect to="/homeworks"/>
             </Route>
-            <PrivateRoute path="/homework/:id" component={() => <Homework/>}/>
-            <Route component={() => <h1>404 Not Found</h1>} />
+            <PrivateRoute path="/homework/:id" component={Homework}/>
+            <Route component={NotFound} />
           </Switch>
         </div>
-        
       </Switch>
     </Router>
   );
