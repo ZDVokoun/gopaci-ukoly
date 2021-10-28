@@ -1,6 +1,6 @@
 import { jwtExtract } from "../helpers/jwt-helper";
 import { createClient } from "../helpers/db-helper";
-import { hasValues } from "../helpers/validation-helper.mjs";
+import { hasValues } from "../helpers/validation-helper";
 
 export async function handler(event) {
     const payload = jwtExtract(event.headers.cookie);

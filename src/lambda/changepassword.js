@@ -1,5 +1,5 @@
-import { jwtExtract } from "../helpers/jwt-helper.mjs";
-import { createClient } from "../helpers/db-helper.mjs";
+import { jwtExtract } from "../helpers/jwt-helper.js";
+import { createClient } from "../helpers/db-helper.js";
 import bcrypt from "bcryptjs";
 
 export async function handler(event) {

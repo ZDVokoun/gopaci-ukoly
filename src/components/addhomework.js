@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Select, MenuItem, Switch, FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Fab, FormControl, InputLabel } from "@mui/material";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from "@mui/lab"
-import { sendRequest } from "../helpers/http-helper.mjs";
+import { sendRequest } from "../helpers/http-helper.js";
 import React, { useState, useEffect } from "react";
 
 export function AddHomework (props) {

@@ -1,4 +1,4 @@
-import {publicKey} from "../helpers/jwt-helper"
+import { publicKey } from "../helpers/jwt-helper"
 
 export async function handler() {
     return {

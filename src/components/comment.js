@@ -1,7 +1,7 @@
 import { Button, Card, TextField, Alert, Collapse } from "@mui/material";
 import { useState, createRef, useEffect } from "react";
 import imageCompression from "browser-image-compression";
-import { sendRequest } from "../helpers/http-helper.mjs";
+import { sendRequest } from "../helpers/http-helper.js";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale"
 
@@ -103,7 +103,7 @@ export function AddComment (props) {
             {response.ok !== null && (response.ok ? <Alert severity="info">Úspěšně odesláno</Alert> : <Alert severity="error">Omlouváme se, došlo k chybě. Zkuste to prosím znovu. Podrobnosti: {response.msg}</Alert>)}
         </Collapse>
         <TextField
-            label="Komentář *"
+            label="Komentář"
             fullWidth
             required
             multiline 

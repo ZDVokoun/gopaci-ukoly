@@ -3,7 +3,7 @@ import { createClient } from "../helpers/db-helper";
 
 export async function handler(event) {
     const payload = jwtExtract(event.headers.cookie);
-    if (payload) {
+    if (payload) {/*
         if (event.queryStringParameters.username) {
             const dbClient = createClient();
             try {
@@ -24,7 +24,7 @@ export async function handler(event) {
             } finally {
                 dbClient.close()
             }
-        }
+        }*/
         return {
             statusCode: 200,
             headers: {

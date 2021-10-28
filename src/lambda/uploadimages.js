@@ -1,15 +1,12 @@
-import MongoDB from "mongodb";
-const { ObjectId } = MongoDB;
-import { createClient } from "../helpers/db-helper.mjs";
-import { jwtExtract } from "../helpers/jwt-helper.mjs";
+import { createClient } from "../helpers/db-helper.js";
+import { jwtExtract } from "../helpers/jwt-helper.js";
 
 export async function handler(event) {
     let errorStatusCode = 500;
     const dbClient = createClient();
     const payload = jwtExtract(event.headers.cookie);
-    const id = event.queryStringParameters.id;
     try {
-        if (event.httpMethod != "GET" && !id) {
+        if (event.httpMethod != "POST") {
             errorStatusCode = 400;
             throw new Error("Bad request");
         } 
@@ -18,16 +15,13 @@ export async function handler(event) {
             throw new Error("Unauthorized")
         }
         await dbClient.connect();
-        const images = dbClient.imagesCollection();
-        const {type, content} = await images.findOne({_id: ObjectId(id)});
+        const images = dbClient.imagesCollection()
+        let data = JSON.parse(event.body);
+        let insertion = await images.insertMany(data.map(item => {return {...item, uploadDate: new Date(), content: Buffer.from(item.content, "base64")}}));
 
         return {
             statusCode: 200,
-            headers: {
-                "Content-Type": type
-            },
-            body: content.toString("base64"),
-            isBase64Encoded: true
+            body: JSON.stringify(Object.values(insertion.insertedIds))
         }
     } catch (err) {
         console.error(err);

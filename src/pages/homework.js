@@ -1,11 +1,11 @@
-import { sendRequest } from "../helpers/http-helper.mjs";
+import { sendRequest } from "../helpers/http-helper.js";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Skeleton } from "@mui/material";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale"
 import { AddComment, Comments } from "../components/comment";
-import { NotFound, Error } from "./error";
+import { Error } from "./error";
 
 export function Homework(props) {
     const { id } = useParams();
@@ -18,7 +18,7 @@ export function Homework(props) {
             .catch(err => setError(err));
         // eslint-disable-next-line
     }, []);
-    return (homework === null ? (error ? (error === "Not Found" ? <NotFound/> : <Error msg={error} />) : <div><br/><Skeleton variant="text"/></div>) :
+    return (homework === null ? (error ? <Error msg={error} /> : <div><br/><Skeleton variant="text"/></div>) :
         (<div className="homework">
             <h1>{homework.name}</h1>
             <p>Termín: {format(new Date(homework.dueTime), "EEEE d. MMMM y H:mm", { locale: cs })}</p>
