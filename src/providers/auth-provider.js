@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { sendRequest } from "../helpers/http-helper.mjs";
+import { sendRequest } from "../helpers/http-helper.js";
 const AuthContext = createContext({});
 function AuthProvider({ children }) {
     const localUserJson = localStorage.getItem("user")

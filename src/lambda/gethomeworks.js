@@ -1,7 +1,6 @@
-import MongoDB from "mongodb";
-const { ObjectId } = MongoDB;
-import { createClient } from "../helpers/db-helper.mjs";
-import { jwtExtract } from "../helpers/jwt-helper.mjs";
+import { ObjectId } from "mongodb";
+import { createClient } from "../helpers/db-helper";
+import { jwtExtract } from "../helpers/jwt-helper";
 
 
 

@@ -1,4 +1,4 @@
-import { sendRequest } from "../helpers/http-helper.mjs";
+import { sendRequest } from "../helpers/http-helper.js";
 import React, { useState, useEffect } from "react";
 import { Box, FormControlLabel, Skeleton, Switch } from "@mui/material";
 import { AddHomework } from "../components/addhomework";
@@ -51,9 +51,10 @@ export function Homeworks (props) {
                     localizer={localizer}
                     events={homeworks
                         .filter(homework => homework.voluntary ? settings.homeworks.showVoluntary : true)
-                        .map(homework => {return {"title": homework.name, "start": new Date(homework.dueTime), end: new Date(homework.dueTime), "allDay": true, resource: homework.id}})
+                        .map(homework => {return {"title": homework.name, "start": new Date(homework.dueTime), end: new Date(homework.dueTime), "allDay": true, resource: {id: homework.id, voluntary: homework.voluntary}}})
                     }
-                    onDoubleClickEvent={homework => props.history.push("/homework/" + homework.resource)}
+                    onDoubleClickEvent={homework => props.history.push("/homework/" + homework.resource.id)}
+                    eventPropGetter={event => event.resource.voluntary ? {style: {backgroundColor: "#314aad"}} : null}
                 />
             </Box>
             <Agenda history={props.history} homeworks={homeworks.filter(homework => homework.voluntary ? settings.homeworks.showVoluntary : true)} sx={{display: { xs: 'block', sm: 'none' }}}/>

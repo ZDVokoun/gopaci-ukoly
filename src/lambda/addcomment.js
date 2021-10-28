@@ -1,6 +1,6 @@
-import { createClient } from "../helpers/db-helper.mjs";
-import { jwtExtract } from "../helpers/jwt-helper.mjs";
-import { hasValues } from "../helpers/validation-helper.mjs";
+import { createClient } from "../helpers/db-helper";
+import { jwtExtract } from "../helpers/jwt-helper";
+import { hasValues } from "../helpers/validation-helper";
 
 export async function handler(event) {
     let errorStatusCode = 500;

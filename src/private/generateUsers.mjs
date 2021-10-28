@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { createClient } from "../helpers/db-helper.mjs";
+import { createClient } from "../helpers/db-helper.js";
 import generatePassword from "password-generator";
 
 function removeDiacritics(string) {

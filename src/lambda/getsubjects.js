@@ -1,5 +1,5 @@
-import { createClient } from "../helpers/db-helper.mjs";
-import { jwtExtract } from "../helpers/jwt-helper.mjs";
+import { createClient } from "../helpers/db-helper";
+import { jwtExtract } from "../helpers/jwt-helper";
 
 export async function handler(event) {
     let errorStatusCode = 500;
