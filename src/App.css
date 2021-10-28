@@ -129,3 +129,6 @@ img {
   border-radius: 5px;
   margin: 1% 0px;
 }
+.agendaItem.voluntary {
+  background-color: #314aad;
+}

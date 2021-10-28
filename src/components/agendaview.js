@@ -18,6 +18,6 @@ export function Agenda ({homeworks, sx, history}) {
     }
     const filtered = groupByDate(homeworks).sort((first,second) => new Date(first.date) - new Date(second.date));
     return (<Box sx={sx}>
-        {filtered && filtered.map(group => <div><p>{format(new Date(group.date), "EEEE d. MMMM y", {locale: cs})}</p>{group.homeworks.map(homework => <div className="agendaItem" onClick={() => history.push("homework/" + homework.id)}>{homework.name}</div>)}</div>)}
+        {filtered && filtered.map(group => <div><p>{format(new Date(group.date), "EEEE d. MMMM y", {locale: cs})}</p>{group.homeworks.map(homework => <div className={"agendaItem" + (homework.voluntary ? " voluntary" : "")} onClick={() => history.push("homework/" + homework.id)}>{homework.name}</div>)}</div>)}
     </Box>)
 }
