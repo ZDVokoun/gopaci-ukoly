@@ -23,9 +23,6 @@ export async function handler(event) {
     try {
         await dbClient.connect();
         const homeworks = dbClient.homeworksCollection();
-        const users = dbClient.usersCollection();
-        const nameOfUser = (await users.findOne({username: payload.username}, {user: 1}));
-        console.log(nameOfUser)
         await homeworks.insertOne(Object.assign(req, {
             "user": payload.username,
             "dueTime": new Date(req.dueTime),

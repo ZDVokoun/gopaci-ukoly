@@ -5,7 +5,8 @@ import { DateTimePicker, LocalizationProvider } from "@mui/lab"
 import { sendRequest } from "../helpers/http-helper.js";
 import React, { useState, useEffect } from "react";
 
-export function AddHomework (props) {
+
+function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
     const defaultSelection = {
         name: "",
         description:"",
@@ -15,7 +16,25 @@ export function AddHomework (props) {
         subject: "",
         group: ""
     };
-    const [open, setOpen] = useState(false);
+    const [formValues, setFormValues] = useState(Object.assign(defaultSelection, inputData));
+    const [subjects, setSubjects] = useState([]);
+    useEffect(() => sendRequest("getsubjects").then(res => setSubjects(res)).catch(err => alert(err)), [])
+
+    const currentSubject = subjects.find(subject => formValues.subject === subject.shortcut);
+
+
+    const handleClose = () => {
+        setOpen(false);
+        setFormValues(defaultSelection);
+    }
+
+    const handleInputChange = (id, value) => {
+        setFormValues({
+            ...formValues,
+            [id]:value
+        })
+    }
+
     const handleSubmit = () => {
         let toSend = formValues;
         if (currentSubject.groups.length === 1) {
@@ -24,121 +43,116 @@ export function AddHomework (props) {
                 group: currentSubject.groups[0]
             }
         }
-        return sendRequest("addhomework", toSend)
-            .then(() => {
-                setOpen(false);
-                setFormValues(defaultSelection);
-                props.onSubmit();  
-            })
-            .catch(err => alert(err));
-    }
-    const handleClose = () => {
-        setOpen(false);
+        onSubmit(toSend);
         setFormValues(defaultSelection);
     }
 
-    const [formValues, setFormValues] = useState(defaultSelection);
-    const handleInputChange = (id, value) => {
-        setFormValues({
-            ...formValues,
-            [id]:value
-        })
+
+    return (<Dialog open={open} onClose={() => setOpen(false)}>
+    <DialogTitle>Přidat nový úkol</DialogTitle>
+    <DialogContent>
+        <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Jméno úkolu"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={event => {
+                const {id, value} = event.target;
+                return handleInputChange(id,value);
+            }}
+        />
+        <TextField
+            margin="dense"
+            id="description"
+            label="Popis"
+            type="textarea"
+            fullWidth
+            variant="standard"
+            onChange={event => {
+                const {id, value} = event.target;
+                return handleInputChange(id,value);
+            }}
+        />
+        <br/>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <div className="dateInput">
+                <DateTimePicker
+                    id="dueTime"
+                    className="dueTime"
+                    renderInput={(props) => <TextField {...props} />}
+                    label="Čas odevzdání"
+                    value={formValues.dueTime}
+                    onChange={value => handleInputChange("dueTime",value)}
+                />
+            </div>
+        </LocalizationProvider>
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="subject">Předmět</InputLabel>
+            <Select
+                labelId="subject"
+                id="subject"
+                value={formValues.subject}
+                label="Předmět"
+                onChange={event => handleInputChange("subject", event.target.value)}
+            >
+                {subjects.map(item => <MenuItem key={item.shortcut} value={item.shortcut}>{item.name}</MenuItem>)}
+            </Select>
+        </FormControl>
+        {formValues.subject && currentSubject.groups.length > 1 ? 
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="group">Skupina</InputLabel>
+                <Select
+                    labelId="group"
+                    id="group"
+                    value={formValues.group}
+                    label="Skupina"
+                    onChange={event => handleInputChange("group", event.target.value)}
+                >
+                    {currentSubject.groups.map(item => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                </Select>
+            </FormControl>
+            :
+            null
+        }
+        <br/>
+        <FormControlLabel 
+            control={<Switch 
+                checked={formValues.voluntary}
+                onChange={event => handleInputChange("voluntary", event.target.checked)}
+            />} 
+            label="Dobrovolné" 
+        />
+    </DialogContent>
+    <DialogActions>
+        <Button onClick={handleClose}>Zavřít</Button>
+        <Button onClick={handleSubmit}>Zveřejnit</Button>
+    </DialogActions>
+</Dialog>)
+}
+
+
+
+
+export function AddHomework (props) {
+    const [open, setOpen] = useState(false);
+    const handleSubmit = (formValues) => {
+        return sendRequest("addhomework", formValues)
+            .then(() => {
+                setOpen(false);
+            })
+            .catch(err => alert(err));
     }
-
-    const [subjects, setSubjects] = useState([]);
-    useEffect(() => sendRequest("getsubjects").then(res => setSubjects(res)).catch(err => alert(err)), [])
-
-    const currentSubject = subjects.find(subject => formValues.subject === subject.shortcut);
-
     return (
         <div id="addHomework">
             <Fab variant="extended" size="medium" color="primary" aria-label="add" onClick={() => setOpen(true)}>
                 <AddIcon sx={{ mr: 1 }} />
-                Add New Homework
+                Přidat nový úkol
             </Fab>
-            <Dialog open={open} onClose={() => setOpen(false)}>
-                <DialogTitle>Přidat nový úkol</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Jméno úkolu"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        onChange={event => {
-                            const {id, value} = event.target;
-                            return handleInputChange(id,value);
-                        }}
-                    />
-                    <TextField
-                        margin="dense"
-                        id="description"
-                        label="Popis"
-                        type="textarea"
-                        fullWidth
-                        variant="standard"
-                        onChange={event => {
-                            const {id, value} = event.target;
-                            return handleInputChange(id,value);
-                        }}
-                    />
-                    <br/>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <div className="dateInput">
-                            <DateTimePicker
-                                id="dueTime"
-                                className="dueTime"
-                                renderInput={(props) => <TextField {...props} />}
-                                label="Čas odevzdání"
-                                value={formValues.dueTime}
-                                onChange={value => handleInputChange("dueTime",value)}
-                            />
-                        </div>
-                    </LocalizationProvider>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                        <InputLabel id="subject">Předmět</InputLabel>
-                        <Select
-                            labelId="subject"
-                            id="subject"
-                            value={formValues.subject}
-                            label="Předmět"
-                            onChange={event => handleInputChange("subject", event.target.value)}
-                        >
-                            {subjects.map(item => <MenuItem key={item.shortcut} value={item.shortcut}>{item.name}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    {formValues.subject && currentSubject.groups.length > 1 ? 
-                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                            <InputLabel id="group">Skupina</InputLabel>
-                            <Select
-                                labelId="group"
-                                id="group"
-                                value={formValues.group}
-                                label="Skupina"
-                                onChange={event => handleInputChange("group", event.target.value)}
-                            >
-                                {currentSubject.groups.map(item => <MenuItem key={item} value={item}>{item}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                        :
-                        null
-                    }
-                    <br/>
-                    <FormControlLabel 
-                        control={<Switch 
-                            checked={formValues.voluntary}
-                            onChange={event => handleInputChange("voluntary", event.target.checked)}
-                        />} 
-                        label="Dobrovolné" 
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Zavřít</Button>
-                    <Button onClick={handleSubmit}>Zveřejnit</Button>
-                </DialogActions>
-            </Dialog>
+            <AddHomeworkDialog open={open} setOpen={setOpen} onSubmit={handleSubmit}/>
         </div>
     )
 }
+
