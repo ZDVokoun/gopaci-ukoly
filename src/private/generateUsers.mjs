@@ -30,41 +30,41 @@ function removeDiacritics(string) {
 }
 
 function toUsername(string) {
-    let [name, surname] = removeDiacritics(string).split(" ");
+    let [surname, name] = removeDiacritics(string).split(" ");
     return `${surname}.${name[0]}`.toLowerCase();
 }
 
 const userList = [
-    {name: "Ondřej Sedláček", groups: ["Aj2", "S1", "whole", "Hv", "Nj"]},
-    {name: "Tereza Korčeková", groups: ["Aj1", "S1", "whole", "Vv", "Fj"]},
-    {name: "Vít Stružka", groups: ["Aj2", "S2", "whole", "Hv", "Nj"]},
-    {name: "Matyáš Urban", groups: ["Aj2", "S1", "whole", "Hv", "Fj"]},
-    // { name: 'Barčanská Sandra', groups: [ 'whole', "Aj1", "Fj", "S1", "Vv" ] },
-    // { name: 'Bednářová Adéla', groups: [ 'whole', "Vv", "Aj1", "Nj" ] },
-    // { name: 'Brzezná Karolína', groups: [ 'whole', "Vv", "Aj1", "Fj" ] },
-    // { name: 'Buršík Karel', groups: [ 'whole', "Aj1", "Hv", "Fj" ] },
-    // { name: 'Buršík Vít', groups: [ 'whole', "Aj2", "Nj" ] },
-    // { name: 'Čtyroká Eva', groups: [ 'whole', "Aj1", "Hv", "Nj" ] },
-    // { name: 'Galbavá Laura', groups: [ 'whole', "Aj1", "Vv", "Fj" ] },
-    // { name: 'Haňkovská Veronika', groups: [ 'whole', "Aj1", "Vv", "Fj" ] },
-    // { name: 'Holeček Ondřej', groups: [ 'whole', "Aj1", "Nj" ] },
-    // { name: 'Ježková Lucie', groups: [ 'whole', "Aj1", "Vv", "Nj" ] },
-    // { name: 'Kándl Matěj', groups: [ 'whole', "Aj2", "Hv", "Fj" ] },
-    // { name: 'Kočí Dominika', groups: [ 'whole', "Aj1", "Vv", "Fj" ] },
-    // { name: 'Lukavská Eliška', groups: [ 'whole', "Aj2", "Vv", "Nj" ] },
-    // { name: 'Mack Tadeáš', groups: [ 'whole', "Aj1", "Nj" ] },
-    // { name: 'Pavlová Júlia', groups: [ 'whole', "Aj2", "Hv", "Fj" ] },
-    // { name: 'Průhová Lucie', groups: [ 'whole', "Aj2", "Vv", "Fj" ] },
-    // { name: 'Putz Otakar', groups: [ 'whole', "Aj1", "Vv", "Fj", "S2" ] },
-    // { name: 'Putz Tobiáš', groups: [ 'whole', "Aj1", "Fj", "S1" ] },
-    // { name: 'Růžička Jakub', groups: [ 'whole', "Aj1", "Hv", "Nj" ] },
-    // { name: 'Sedláčková Barbora', groups: [ 'whole', "Aj2", "Nj", "S2" ] },
-    // { name: 'Sladká Anežka', groups: [ 'whole', "Aj2", "Nj", "S1" ] },
-    // { name: 'Součková Adéla', groups: [ 'whole', "Aj2", "Hv", "Fj" ] },
-    // { name: 'Strejčková Adéla', groups: [ 'whole', "Aj2", "Vv", "Nj" ] },
-    // { name: 'Šrámek Kristián', groups: [ 'whole', "Aj2", "Hv", "Nj", "S1" ] },
-    // { name: 'Weiss David', groups: [ 'whole', "Aj2", "Hv", "Nj" ] },
-    // { name: 'Zemanová Izabela', groups: [ 'whole', "Aj2", "Vv", "Nj", "S1" ] }
+    { name: "Sedláček Ondřej", groups: ["Aj2", "S1", "whole", "Hv", "Nj"] },
+    { name: "Korčeková Tereza", groups: ["Aj1", "S1", "whole", "Vv", "Fj"] },
+    { name: "Stružka Vít", groups: ["Aj2", "S2", "whole", "Hv", "Nj"] },
+    { name: "Urban Matyáš", groups: ["Aj2", "S1", "whole", "Hv", "Fj"] },
+    { name: 'Barčanská Sandra', groups: [ 'whole', "Aj1", "Fj", "S1", "Vv" ] },
+    { name: 'Bednářová Adéla', groups: [ 'whole', "Vv", "Aj1", "Nj", "S2" ] },
+    { name: 'Brzezná Karolína', groups: [ 'whole', "Hv", "Aj1", "Fj", "S1" ] },
+    { name: 'Buršík Karel', groups: [ 'whole', "Aj1", "Hv", "Fj", "S2" ] },
+    { name: 'Buršík Vít', groups: [ 'whole', "Aj2", "Hv", "Nj", "S1" ] },
+    { name: 'Čtyroká Eva', groups: [ 'whole', "Aj1", "Hv", "Nj", "S2" ] },
+    { name: 'Galbavá Laura', groups: [ 'whole', "Aj1", "Vv", "Fj", "S1" ] },
+    { name: 'Haňkovská Veronika', groups: [ 'whole', "Aj1", "Vv", "Fj", "S2" ] },
+    { name: 'Holeček Ondřej', groups: [ 'whole', "Aj1", "Vv", "Nj", "S1" ] },
+    { name: 'Ježková Lucie', groups: [ 'whole', "Aj1", "Vv", "Nj", "S2" ] },
+    { name: 'Kándl Matěj', groups: [ 'whole', "Aj2", "Hv", "Fj", "S1" ] },
+    { name: 'Kočí Dominika', groups: [ 'whole', "Aj1", "Vv", "Fj", "S2" ] },
+    { name: 'Lukavská Eliška', groups: [ 'whole', "Aj2", "Vv", "Nj", "S2" ] },
+    { name: 'Mack Tadeáš', groups: [ 'whole', "Aj1", "Hv", "Nj", "S1" ] },
+    { name: 'Pavlová Júlia', groups: [ 'whole', "Aj2", "Hv", "Fj", "S2" ] },
+    { name: 'Průhová Lucie', groups: [ 'whole', "Aj2", "Vv", "Fj", "S1" ] },
+    { name: 'Putz Otakar', groups: [ 'whole', "Aj1", "Vv", "Fj", "S2" ] },
+    { name: 'Putz Tobiáš', groups: [ 'whole', "Aj1", "Fj", "S1" ] },
+    { name: 'Růžička Jakub', groups: [ 'whole', "Aj1", "Hv", "Nj", "S2" ] },
+    { name: 'Sedláčková Barbora', groups: [ 'whole', "Aj2", "Vv", "Nj", "S2" ] },
+    { name: 'Sladká Anežka', groups: [ 'whole', "Aj2", "Vv", "Nj", "S1" ] },
+    { name: 'Součková Adéla', groups: [ 'whole', "Aj2", "Hv", "Fj", "S2" ] },
+    { name: 'Strejčková Adéla', groups: [ 'whole', "Aj2", "Vv", "Nj", "S1" ] },
+    { name: 'Šrámek Kristián', groups: [ 'whole', "Aj2", "Hv", "Nj", "S1" ] },
+    { name: 'Weiss David', groups: [ 'whole', "Aj2", "Hv", "Nj", "S2" ] },
+    { name: 'Zemanová Izabela', groups: [ 'whole', "Aj2", "Vv", "Nj", "S1" ] }
 ];
 
 const dbClient = createClient(`mongodb+srv://spravce:***REMOVED***@cluster0.u4fbx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`);
@@ -84,7 +84,7 @@ try {
             password: passwordHash,
             groups: user.groups
         })
-        generated.push(Object.assign(insertion, {password, user: user.name}));
+        generated.push(Object.assign({password, user: username}));
     }
     console.log(JSON.stringify(generated));
 } catch (err) {

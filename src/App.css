@@ -117,6 +117,9 @@ img {
   padding: 2%;
   margin: 2% 0px;
 }
+.comment > p, .homework > p {
+  white-space: pre-line;
+}
 .gallery {
   display: grid;
   grid-template-columns: auto auto;
@@ -128,6 +131,9 @@ img {
   color: white;
   border-radius: 5px;
   margin: 1% 0px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .agendaItem.voluntary {
   background-color: #314aad;
