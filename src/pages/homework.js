@@ -6,16 +6,21 @@ import { format } from "date-fns";
 import { cs } from "date-fns/locale"
 import { AddComment, Comments } from "../components/comment";
 import { Error } from "./error";
+import { useAuth } from "../providers/auth-provider.js";
+import { EditHomework } from "../components/addhomework.js";
 
 export function Homework(props) {
+    const { user } = useAuth();
     const { id } = useParams();
     const [homework, setHomework] = useState(null);
-    const [error, setError] = useState(null)
+    const [error, setError] = useState(null);
+    const getHomework = () => sendRequest(`gethomeworks?id=${id}`)
+        .then(res => setHomework(res))
+        .catch(err => setError(err));
     useEffect(() => {
         if (!id || id === ":id") props.history.push("/homeworks");
-        sendRequest(`gethomeworks?id=${id}`)
-            .then(res => setHomework(res))
-            .catch(err => setError(err));
+        getHomework();
+        console.log(user)
         // eslint-disable-next-line
     }, []);
     return (homework === null ? (error ? <Error msg={error} /> : <div><br/><Skeleton variant="text"/></div>) :
@@ -25,8 +30,12 @@ export function Homework(props) {
             <p>Předmět: {homework.subjectFullName}</p>
             <h3>Popis:</h3>       
             <p>{homework.description || ""}</p>
-            <h3>Tvůrce:</h3>
-            <p>{homework.userFullName}</p>
+            { homework.user === user.username ? 
+            <EditHomework postID={id} prevData={homework} onSubmit={getHomework}/>
+            :
+            [<h3>Tvůrce:</h3>,
+            <p>{homework.userFullName}</p>]
+            }
             <hr/>
             <AddComment disabled={false} id={id}/>
             <hr/>

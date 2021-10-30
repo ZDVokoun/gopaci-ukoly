@@ -9,14 +9,20 @@ export function Login(props) {
     const redirectTo = prevPath || "/";
     const [ username, setUsername ] = useState("");
     const [ password, setPassword ] = useState("");
-    const handleSubmit = () => {
-        login({username, password}).catch(error => alert(error));
+    const handleSubmit = () => login({username, password}).catch(error => alert(error));
+    const onKeyDown = event => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          event.stopPropagation();
+          handleSubmit();
+        }
     }
+
     return user ? <Redirect to={redirectTo} /> : (
         <Card
             id="login"
             variant="outlined"
-        >
+        > 
             <h2>Přihlašte se</h2>
             <TextField
                 required
@@ -24,7 +30,9 @@ export function Login(props) {
                 id="username"
                 label="Jméno"
                 variant="standard"
+                autoComplete="username"
                 onChange={event => setUsername(event.target.value)}
+                onKeyDown={onKeyDown}
             />
             <TextField
                 required
@@ -35,6 +43,7 @@ export function Login(props) {
                 autoComplete="current-password"
                 variant="standard"
                 onChange={event => setPassword(event.target.value)}
+                onKeyDown={onKeyDown}
             />
             <Button fullWidth onClick={handleSubmit}>Přihlásit se</Button>
         </Card>
