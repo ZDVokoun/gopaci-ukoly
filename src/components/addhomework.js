@@ -4,6 +4,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from "@mui/lab"
 import { sendRequest } from "../helpers/http-helper.js";
 import React, { useState, useEffect } from "react";
+import EditIcon from '@mui/icons-material/Edit';
 
 
 function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
@@ -11,17 +12,20 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
         name: "",
         description:"",
         dueTime: new Date(),
-        preciseTime: false,
         voluntary: false,
         subject: "",
         group: ""
     };
-    const [formValues, setFormValues] = useState(Object.assign(defaultSelection, inputData));
+    const filterDataFromProps = input => {
+        let filteredInput = Object.fromEntries(Object.entries(input).filter(([key, val]) => Object.keys(defaultSelection).includes(key)));
+        filteredInput.dueTime = new Date(filteredInput.dueTime)
+        return filteredInput
+    }
+    const [formValues, setFormValues] = useState(Object.assign(defaultSelection, filterDataFromProps(inputData)));
     const [subjects, setSubjects] = useState([]);
     useEffect(() => sendRequest("getsubjects").then(res => setSubjects(res)).catch(err => alert(err)), [])
 
     const currentSubject = subjects.find(subject => formValues.subject === subject.shortcut);
-
 
     const handleClose = () => {
         setOpen(false);
@@ -33,6 +37,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
             ...formValues,
             [id]:value
         })
+        console.log(formValues)
     }
 
     const handleSubmit = () => {
@@ -43,8 +48,12 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
                 group: currentSubject.groups[0]
             }
         }
-        onSubmit(toSend);
-        setFormValues(defaultSelection);
+        return onSubmit(toSend)
+            .then(() => {
+                setOpen(false);
+                setFormValues(defaultSelection);
+            })
+            .catch(err => alert(err));
     }
 
 
@@ -59,6 +68,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
             type="text"
             fullWidth
             variant="standard"
+            value={formValues.name}
             onChange={event => {
                 const {id, value} = event.target;
                 return handleInputChange(id,value);
@@ -71,6 +81,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
             type="textarea"
             fullWidth
             variant="standard"
+            value={formValues.description}
             onChange={event => {
                 const {id, value} = event.target;
                 return handleInputChange(id,value);
@@ -101,7 +112,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
                 {subjects.map(item => <MenuItem key={item.shortcut} value={item.shortcut}>{item.name}</MenuItem>)}
             </Select>
         </FormControl>
-        {formValues.subject && currentSubject.groups.length > 1 ? 
+        {formValues.subject && currentSubject && currentSubject.groups.length > 1 ? 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="group">Skupina</InputLabel>
                 <Select
@@ -111,7 +122,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
                     label="Skupina"
                     onChange={event => handleInputChange("group", event.target.value)}
                 >
-                    {currentSubject.groups.map(item => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                    {currentSubject && currentSubject.groups.map(item => <MenuItem key={item} value={item}>{item}</MenuItem>)}
                 </Select>
             </FormControl>
             :
@@ -133,18 +144,13 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
 </Dialog>)
 }
 
-
-
-
 export function AddHomework (props) {
     const [open, setOpen] = useState(false);
-    const handleSubmit = (formValues) => {
-        return sendRequest("addhomework", formValues)
-            .then(() => {
-                setOpen(false);
-            })
-            .catch(err => alert(err));
-    }
+    const handleSubmit = formValues => sendRequest("addhomework", formValues)
+        .then(res => {
+            if (props.onSubmit) props.onSubmit();
+            return res;
+        })
     return (
         <div id="addHomework">
             <Fab variant="extended" size="medium" color="primary" aria-label="add" onClick={() => setOpen(true)}>
@@ -156,3 +162,19 @@ export function AddHomework (props) {
     )
 }
 
+export function EditHomework(props) {
+    const [open, setOpen] = useState(false);
+    const handleSubmit = (formValues) => sendRequest(`addhomework?id=${props.postID}`, formValues)
+        .then(res => {
+            if (props.onSubmit) props.onSubmit();
+            return res;
+        })
+    return (
+        <div id="edithomework">
+            <Button variant="outlined" startIcon={<EditIcon />} aria-label="edit" onClick={() => setOpen(true)}>
+                Upravit
+            </Button>
+            <AddHomeworkDialog open={open} setOpen={setOpen} onSubmit={handleSubmit} inputData={props.prevData}/>
+        </div>
+    )
+}
