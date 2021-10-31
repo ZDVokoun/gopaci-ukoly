@@ -1,5 +1,6 @@
 import { Link, Redirect } from "react-router-dom";
 import { useAuth } from "../providers/auth-provider";
+import { Component } from "react";
 
 export function Error({ msg }) {
     const { logout } = useAuth();
@@ -22,3 +23,23 @@ export function NotFound(){
         <Link to="/">Vrátit se domů</Link>
     </div>)
 }
+
+export class ErrorBoundary extends Component {
+    constructor(props) {
+      super(props);
+      this.state = { hasError: false, error: null };
+    }
+  
+    static getDerivedStateFromError(error) { 
+        return { hasError: true, error };  
+    }
+    componentDidCatch(error, errorInfo) { 
+        // Add report service
+    }
+    render() {
+        if (this.state.hasError) { 
+          return <Error msg={this.state.error}/>;
+        }
+        return this.props.children; 
+    }
+  }

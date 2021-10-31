@@ -7,6 +7,7 @@ import { startOfWeek, format, parse, getDay } from "date-fns";
 import { cs } from "date-fns/locale"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import { Agenda } from "../components/agendaview";
+import Loading from "../components/loading.js";
 
 const locales = {
     "cs-CZ": cs
@@ -20,7 +21,7 @@ const localizer = dateFnsLocalizer({
     locales
 })
 
-export function Homeworks (props) {
+export default function Homeworks (props) {
     const [homeworks, setHomeworks] = useState(null);
     const [settings, setSettings] = useState({homeworks: {}});
 
@@ -30,7 +31,6 @@ export function Homeworks (props) {
         console.log(settings)
     }
     const updateList = () => setTimeout(() => {
-        setHomeworks(null);
         getHomeworks();
     }, 1000)
 
@@ -42,7 +42,7 @@ export function Homeworks (props) {
     }, []);
     useEffect(() => localStorage.setItem("settings", JSON.stringify(settings)), [settings])
 
-    return homeworks === null ? <div><br/><Skeleton variant="rectangle"/></div> : (
+    return homeworks === null ? <Loading /> : (
         <div id="homeworks">
             <Box sx={{display: {xs: "none", sm: "block"}, height: "100%"}}>
                 <Calendar
