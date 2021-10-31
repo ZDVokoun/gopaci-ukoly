@@ -3,11 +3,11 @@ import { Select, MenuItem, Switch, FormControlLabel, Dialog, DialogActions, Dial
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from "@mui/lab"
 import { sendRequest } from "../helpers/http-helper.js";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 
 
-function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
+function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     const defaultSelection = {
         name: "",
         description:"",
@@ -16,12 +16,12 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData = {}}) {
         subject: "",
         group: ""
     };
-    const filterDataFromProps = input => {
+    const dataFromProps = input => {
         let filteredInput = Object.fromEntries(Object.entries(input).filter(([key, val]) => Object.keys(defaultSelection).includes(key)));
-        filteredInput.dueTime = new Date(filteredInput.dueTime)
-        return filteredInput
+        filteredInput.dueTime = new Date(filteredInput.dueTime);
+        return Object.assign(defaultSelection, filteredInput);
     }
-    const [formValues, setFormValues] = useState(Object.assign(defaultSelection, filterDataFromProps(inputData)));
+    const [formValues, setFormValues] = useState(inputData ? dataFromProps(inputData) : defaultSelection);
     const [subjects, setSubjects] = useState([]);
     useEffect(() => sendRequest("getsubjects").then(res => setSubjects(res)).catch(err => alert(err)), [])
 

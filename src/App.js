@@ -3,10 +3,12 @@ import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom
 import { Login } from './pages/login';
 import Sidebar from './components/sidebar';
 import { PrivateRoute } from "./components/privateroute";
-import { Homeworks } from './pages/homeworks';
-import { Homework } from './pages/homework';
-import { NotFound } from './pages/error';
+import { NotFound, ErrorBoundary } from './pages/error';
 import { Settings } from './pages/settings';
+import { Suspense, lazy } from 'react';
+import Loading from './components/loading';
+const Homeworks = lazy(() => import("./pages/homeworks"))
+const Homework = lazy(() => import("./pages/homework"))
 
 function App() {
   return (
@@ -15,18 +17,22 @@ function App() {
         <Route path="/login" exact component={Login} />
         <div id="main">
           <Sidebar/>
-          <Switch>
-            <Route exact path="/">
-              <Redirect to="/homeworks"/>
-            </Route>
-            <PrivateRoute path="/homeworks" exact component={Homeworks}/>
-            <Route exact path="/homework">
-              <Redirect to="/homeworks"/>
-            </Route>
-            <PrivateRoute path="/homework/:id" component={Homework}/>
-            <PrivateRoute path="/settings" component={Settings}/>
-            <Route component={NotFound} />
-          </Switch>
+          <ErrorBoundary>
+            <Suspense fallback={<Loading/>}>
+              <Switch>
+                <Route exact path="/">
+                  <Redirect to="/homeworks"/>
+                </Route>
+                <PrivateRoute path="/homeworks" exact component={Homeworks}/>
+                <Route exact path="/homework">
+                  <Redirect to="/homeworks"/>
+                </Route>
+                <PrivateRoute path="/homework/:id" component={Homework}/>
+                <PrivateRoute path="/settings" component={Settings}/>
+                <Route component={NotFound} />
+              </Switch>
+            </Suspense>
+          </ErrorBoundary>
         </div>
       </Switch>
     </Router>

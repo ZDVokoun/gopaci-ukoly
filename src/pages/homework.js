@@ -8,8 +8,9 @@ import { AddComment, Comments } from "../components/comment";
 import { Error } from "./error";
 import { useAuth } from "../providers/auth-provider.js";
 import { EditHomework } from "../components/addhomework.js";
+import Loading from "../components/loading"
 
-export function Homework(props) {
+export default function Homework(props) {
     const { user } = useAuth();
     const { id } = useParams();
     const [homework, setHomework] = useState(null);
@@ -23,7 +24,7 @@ export function Homework(props) {
         console.log(user)
         // eslint-disable-next-line
     }, []);
-    return (homework === null ? (error ? <Error msg={error} /> : <div><br/><Skeleton variant="text"/></div>) :
+    return (homework === null ? (error ? <Error msg={error} /> : <Loading/>) :
         (<div className="homework">
             <h1>{homework.name}</h1>
             <p>Termín: {format(new Date(homework.dueTime), "EEEE d. MMMM y H:mm", { locale: cs })}</p>
