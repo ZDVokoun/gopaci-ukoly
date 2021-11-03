@@ -1,6 +1,6 @@
 import { sendRequest } from "../helpers/http-helper.js";
 import React, { useState, useEffect } from "react";
-import { Box, FormControlLabel, Skeleton, Switch } from "@mui/material";
+import { Box, FormControlLabel, Switch } from "@mui/material";
 import { AddHomework } from "../components/addhomework";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { startOfWeek, format, parse, getDay } from "date-fns";
@@ -8,6 +8,7 @@ import { cs } from "date-fns/locale"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import { Agenda } from "../components/agendaview";
 import Loading from "../components/loading.js";
+import { Error } from "./error.js";
 
 const locales = {
     "cs-CZ": cs
@@ -24,8 +25,9 @@ const localizer = dateFnsLocalizer({
 export default function Homeworks (props) {
     const [homeworks, setHomeworks] = useState(null);
     const [settings, setSettings] = useState({homeworks: {}});
+    const [error, setError] = useState(null);
 
-    const getHomeworks = () => sendRequest("gethomeworks").then(data => setHomeworks(data)).catch(err => alert(err));
+    const getHomeworks = () => sendRequest("gethomeworks").then(data => setHomeworks(data)).catch(err => setError(err));
     const handleSettingsChange = event => {
         setSettings({...settings, homeworks: {[event.target.id]: event.target.checked}});
         console.log(settings)
@@ -42,7 +44,7 @@ export default function Homeworks (props) {
     }, []);
     useEffect(() => localStorage.setItem("settings", JSON.stringify(settings)), [settings])
 
-    return homeworks === null ? <Loading /> : (
+    return homeworks === null ? (error ? <Error msg={error} /> : <Loading/>) : (
         <div id="homeworks">
             <Box sx={{display: {xs: "none", sm: "block"}, height: "100%"}}>
                 <Calendar

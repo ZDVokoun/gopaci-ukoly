@@ -1,7 +1,6 @@
 import { sendRequest } from "../helpers/http-helper.js";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Skeleton } from "@mui/material";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale"
 import { AddComment, Comments } from "../components/comment";
@@ -21,7 +20,6 @@ export default function Homework(props) {
     useEffect(() => {
         if (!id || id === ":id") props.history.push("/homeworks");
         getHomework();
-        console.log(user)
         // eslint-disable-next-line
     }, []);
     return (homework === null ? (error ? <Error msg={error} /> : <Loading/>) :

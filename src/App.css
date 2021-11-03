@@ -98,7 +98,7 @@
     z-index: 5;
   }
 }
-#login > div, #login > button, #newPassword > div, #newPassword > button {
+#login > form > div, #login > form > button, #newPassword > div, #newPassword > button {
   margin: 10px 0px;
 }
 #addHomework {

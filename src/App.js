@@ -10,6 +10,7 @@ import Loading from './components/loading';
 const Homeworks = lazy(() => import("./pages/homeworks"))
 const Homework = lazy(() => import("./pages/homework"))
 
+
 function App() {
   return (
     <Router>

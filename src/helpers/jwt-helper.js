@@ -24,7 +24,7 @@ function createJwtCookie(userId, username) {
     
     const token = jwt.sign({userId, username}, secretKey, {
         algorithm: "RS256",
-        expiresIn: "10 days"
+        expiresIn: "14 days"
     })
     const jwtCookie = cookie.serialize("jwt", token, {
         secure: process.env.NETLIFY_DEV !== "true",

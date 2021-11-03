@@ -4,11 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './providers/auth-provider';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { csCZ } from "@mui/material/locale"
+
+const localize = createTheme({}, csCZ)
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthProvider>
-      <App />
+      <ThemeProvider theme={localize}>
+        <App />
+      </ThemeProvider>
     </AuthProvider>
   </React.StrictMode>,
   document.getElementById('root')
