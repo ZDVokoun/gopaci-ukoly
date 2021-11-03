@@ -9,43 +9,39 @@ export function Login(props) {
     const redirectTo = prevPath || "/";
     const [ username, setUsername ] = useState("");
     const [ password, setPassword ] = useState("");
-    const handleSubmit = () => login({username, password}).catch(error => alert(error));
-    const onKeyDown = event => {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          event.stopPropagation();
-          handleSubmit();
-        }
-    }
+    const handleSubmit = event => {
+        event.preventDefault();
+        return login({username, password}).catch(error => alert(error))
+    };
 
     return user ? <Redirect to={redirectTo} /> : (
         <Card
             id="login"
             variant="outlined"
         > 
-            <h2>Přihlašte se</h2>
-            <TextField
-                required
-                fullWidth
-                id="username"
-                label="Jméno"
-                variant="standard"
-                autoComplete="username"
-                onChange={event => setUsername(event.target.value)}
-                onKeyDown={onKeyDown}
-            />
-            <TextField
-                required
-                fullWidth
-                id="standard-password-input"
-                label="Heslo"
-                type="password"
-                autoComplete="current-password"
-                variant="standard"
-                onChange={event => setPassword(event.target.value)}
-                onKeyDown={onKeyDown}
-            />
-            <Button fullWidth onClick={handleSubmit}>Přihlásit se</Button>
+            <form onSubmit={handleSubmit}>
+                <h2>Přihlašte se</h2>
+                <TextField
+                    required
+                    fullWidth
+                    id="username"
+                    label="Jméno"
+                    variant="standard"
+                    autoComplete="username"
+                    onChange={event => setUsername(event.target.value)}
+                />
+                <TextField
+                    required
+                    fullWidth
+                    id="standard-password-input"
+                    label="Heslo"
+                    type="password"
+                    autoComplete="current-password"
+                    variant="standard"
+                    onChange={event => setPassword(event.target.value)}
+                />
+                <Button fullWidth type="submit">Přihlásit se</Button>
+            </form>
         </Card>
     )
 }
