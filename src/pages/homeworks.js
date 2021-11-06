@@ -57,6 +57,7 @@ export default function Homeworks (props) {
                     }
                     onDoubleClickEvent={homework => props.history.push("/homework/" + homework.resource.id)}
                     eventPropGetter={event => event.resource.voluntary ? {style: {backgroundColor: "#314aad"}} : null}
+                    popup
                 />
             </Box>
             <Agenda history={props.history} homeworks={homeworks.filter(homework => homework.voluntary ? settings.homeworks.showVoluntary : true)} sx={{display: { xs: 'block', sm: 'none' }}}/>

@@ -11,6 +11,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     const defaultSelection = {
         name: "",
         description:"",
+        type: "homework",
         dueTime: new Date(),
         voluntary: false,
         subject: "",
