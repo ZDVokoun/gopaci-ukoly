@@ -84,11 +84,12 @@
   #login {
     width: 90vw;
   }
-  #main > div:nth-child(2) {
+  #main > div:nth-child(2):not(.homework) {
     margin: 30px auto 0px auto;
     max-width: 80%;
   }
   .homework {
+    margin: 10px auto 0px auto;
     max-width: 80%;
   }
   #sidebar > button {
@@ -138,3 +139,4 @@ img {
 .agendaItem.voluntary {
   background-color: #314aad;
 }
+

@@ -1,0 +1,28 @@
+import { Button } from "@mui/material";
+import { useMemo } from "react";
+import { sendRequest, debounce } from "../helpers/http-helper";
+import { Done, Replay } from '@mui/icons-material';
+
+export default function DoneButton({ postID, type = "homework", isDone = false, onSubmit = () => {} }) {
+    const handleSubmit = () => sendRequest((isDone ? "un" : "") + "done?id=" + postID)
+        .then(() => onSubmit())
+        .catch(res => alert(res));
+    
+    // eslint-disable-next-line
+    const debouncedHandler = useMemo(() => debounce(handleSubmit), [isDone])
+
+    return (
+        <Button size="large" onClick={debouncedHandler} startIcon={isDone ? <Replay/> : <Done/>}>
+            {isDone ? "Vrátit" : {homework: "Hotovo", test: "Připraven", other: "Přečteno"}[type]}
+        </Button>
+    )
+    /*
+    <Fab className="doneButton" variant="extended" onClick={handleSubmit} sx={{
+            position: "fixed",
+            top: {sm: 30, xs: 10},
+            right: {sm: 50, xs: 20},
+        }}>
+            <Done sx={{mr: 1}}/>
+            <Replay sx={{mr: 1}}/>
+    */
+}
