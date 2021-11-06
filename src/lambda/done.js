@@ -15,11 +15,11 @@ export async function handler(event) {
             throw new Error("Unauthorized")
         }
         await dbClient.connect();
-        const isDone = new Boolean(await dbClient.doneCollection().findOne({
+        const isDone = await dbClient.doneCollection().findOne({
             homework: event.queryStringParameters.id,
             user: payload.username,
             undone: undefined
-        }))
+        })
         if (!isDone) {
             await dbClient.doneCollection().insertOne({
                 homework: event.queryStringParameters.id,
