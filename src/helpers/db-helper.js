@@ -13,6 +13,7 @@ export function createClient(url = `mongodb+srv://spravce:${process.env.MONGODB_
     client.imagesCollection = function() {return this.db(dbName).collection("images");};
     client.subjectsCollection = function() {return this.db(dbName).collection("subjects");};
     client.commentsCollection = function() {return this.db(dbName).collection("comments");};
+    client.doneCollection = function() {return this.db(dbName).collection("done");};
     
     return client;
 }
