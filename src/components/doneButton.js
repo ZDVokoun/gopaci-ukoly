@@ -16,13 +16,4 @@ export default function DoneButton({ postID, type = "homework", isDone = false, 
             {isDone ? "Vrátit" : {homework: "Hotovo", test: "Připraven", other: "Přečteno"}[type]}
         </Button>
     )
-    /*
-    <Fab className="doneButton" variant="extended" onClick={handleSubmit} sx={{
-            position: "fixed",
-            top: {sm: 30, xs: 10},
-            right: {sm: 50, xs: 20},
-        }}>
-            <Done sx={{mr: 1}}/>
-            <Replay sx={{mr: 1}}/>
-    */
 }
