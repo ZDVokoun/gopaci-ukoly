@@ -38,6 +38,7 @@ function NewPasswordForm() {
 
 export function Settings(props) {
     return (<div>
+        <h1>Nastavení</h1>
         <NewPasswordForm/>
         </div>)
 }

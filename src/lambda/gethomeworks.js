@@ -24,6 +24,7 @@ export async function handler(event) {
         const users = dbClient.usersCollection();
         const subjects = dbClient.subjectsCollection();
         const comments = dbClient.commentsCollection();
+        const doneCol = dbClient.doneCollection();
         let data = [];
         
         if (event.queryStringParameters.id) {
@@ -36,15 +37,27 @@ export async function handler(event) {
             }
 
             const userList = await users.find({}, {username: 1, user: 1}).toArray();
+            const isDone = await doneCol.findOne({user: payload.username, homework: id, undone: undefined});
             const homeworkComments = (await comments.find({homework: id}).toArray())
                 .map(item => Object.assign(item, {userFullName: userList.find(user => item.user === user.username)["user"]}));
             const subjectFullName = (await subjects.findOne({shortcut: rawData.subject}, {name: 1})).name
             
-            data = Object.assign(rawData, {userFullName: userList.find(user => rawData.user === user.username)["user"], subjectFullName, comments: homeworkComments});
+            data = Object.assign(rawData, {userFullName: userList.find(user => rawData.user === user.username)["user"], subjectFullName, comments: homeworkComments, done: new Boolean(isDone)});
         } else {
             const userGroups = (await users.findOne({ username: username })).groups;
             const rawData = await homeworks.find({dueTime : { $gt:new Date() }}).toArray();
-            data = rawData.filter(item => userGroups.some(group => item.group === group)).map(item => ({id: item._id,name: item.name, dueTime: item.dueTime, voluntary: item.voluntary, subject: item.subject}))
+            const doneHomeworks = (await doneCol.find({user: payload.username, undone: undefined}).toArray());
+            data = rawData
+                .filter(item => userGroups.some(group => item.group === group))
+                .map(item => ({
+                    id: item._id,
+                    name: item.name, 
+                    dueTime: item.dueTime, 
+                    voluntary: item.voluntary, 
+                    subject: item.subject, 
+                    type: item.type,
+                    done: doneHomeworks.some(done => done.homework === item._id.toHexString())
+                }))
         }
 
         return {
