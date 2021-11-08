@@ -29,8 +29,7 @@ export default function Homeworks (props) {
 
     const getHomeworks = () => sendRequest("gethomeworks").then(data => setHomeworks(data)).catch(err => setError(err));
     const handleSettingsChange = event => {
-        setSettings({...settings, homeworks: {[event.target.id]: event.target.checked}});
-        console.log(settings)
+        setSettings({...settings, homeworks: {...settings.homeworks, [event.target.id]: event.target.checked, }});
     }
     const updateList = () => setTimeout(() => {
         getHomeworks();
@@ -46,30 +45,53 @@ export default function Homeworks (props) {
 
     return homeworks === null ? (error ? <Error msg={error} /> : <Loading/>) : (
         <div id="homeworks">
-            <Box sx={{display: {xs: "none", sm: "block"}, height: "100%"}}>
+            <Box sx={{display: {xs: "none", sm: "block"}, height: "90%"}}>
                 <Calendar
                     culture="cs-CZ"
                     views={["month"]}
                     localizer={localizer}
                     events={homeworks
                         .filter(homework => homework.voluntary ? settings.homeworks.showVoluntary : true)
-                        .map(homework => {return {"title": homework.name, "start": new Date(homework.dueTime), end: new Date(homework.dueTime), "allDay": true, resource: {id: homework.id, voluntary: homework.voluntary}}})
+                        .filter(homework => homework.done ? settings.homeworks.showDone : true)
+                        .map(homework => {
+                            const color = homework.done ? "rgb(27, 125, 52)" : (homework.voluntary ? "rgb(66, 37, 204)" : {homework: "#1976d2", test: "rgb(34, 60, 200)", other: "#19a7d2"}[homework.type]);
+                            return {"title": homework.name, "start": new Date(homework.dueTime), end: new Date(homework.dueTime), "allDay": true, resource: {id: homework.id, color}
+                        }})
                     }
                     onDoubleClickEvent={homework => props.history.push("/homework/" + homework.resource.id)}
-                    eventPropGetter={event => event.resource.voluntary ? {style: {backgroundColor: "#314aad"}} : null}
+                    eventPropGetter={event => ({style: {backgroundColor: event.resource.color}})}
                     popup
                 />
             </Box>
-            <Agenda history={props.history} homeworks={homeworks.filter(homework => homework.voluntary ? settings.homeworks.showVoluntary : true)} sx={{display: { xs: 'block', sm: 'none' }}}/>
-            <AddHomework onSubmit={updateList}/>
-            <FormControlLabel
-                control={<Switch 
-                    id="showVoluntary"
-                    checked={settings.homeworks.showVoluntary}
-                    onChange={handleSettingsChange}
-                />}
-                label="Zobrazit dobrovolné"
+            <Agenda 
+                history={props.history} 
+                homeworks={
+                    homeworks
+                        .filter(homework => homework.voluntary ? settings.homeworks.showVoluntary : true)
+                        .filter(homework => homework.done ? settings.homeworks.showDone : true)
+                } 
+                sx={{display: { xs: 'block', sm: 'none' }}}
             />
+            <AddHomework onSubmit={updateList}/>
+            <div>
+                <FormControlLabel
+                    control={<Switch 
+                        id="showVoluntary"
+                        checked={settings.homeworks.showVoluntary}
+                        onChange={handleSettingsChange}
+                    />}
+                    label="Zobrazit dobrovolné"
+                />
+                <FormControlLabel
+                    control={<Switch 
+                        id="showDone"
+                        checked={settings.homeworks.showDone}
+                        onChange={handleSettingsChange}
+                    />}
+                    label="Zobrazit hotové"
+                />
+            </div>
+            
         </div>
     )
 }

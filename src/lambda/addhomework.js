@@ -13,7 +13,7 @@ export async function handler(event) {
         }
     }
     const requiredValues = ["name", "dueTime", "subject", "group"];
-    const valueWhitelist = ["name", "dueTime", "subject", "group", "description", "voluntary", "preciseTime"];
+    const valueWhitelist = ["name", "dueTime", "subject", "group", "description", "voluntary", "preciseTime", "type"];
     if (event.httpMethod != "POST" || new Date(req.dueTime) < new Date() || !hasValues(req, requiredValues) || !passesWhitelist(req, valueWhitelist)) {
         console.log(event.body);
         return {
