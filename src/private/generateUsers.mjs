@@ -78,7 +78,7 @@ try {
         if (existingUser !== null) continue;
         const password = generatePassword(12, false);
         const passwordHash = await bcrypt.hash(password, 10);
-        const insertion = await users.insertOne({
+        await users.insertOne({
             username,
             user: user.name,
             password: passwordHash,

@@ -17,6 +17,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
         subject: "",
         group: ""
     };
+    const postTypes = [{name: "Domácí úkol", id: "homework"}, {name: "Test", id: "test"}, {name: "Ostatní", id: "other"}];
     const dataFromProps = input => {
         let filteredInput = Object.fromEntries(Object.entries(input).filter(([key, val]) => Object.keys(defaultSelection).includes(key)));
         filteredInput.dueTime = new Date(filteredInput.dueTime);
@@ -47,6 +48,12 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
             toSend = {
                 ...formValues,
                 group: currentSubject.groups[0]
+            }
+        }
+        if (formValues.type !== "homework") {
+            toSend = {
+                ...toSend,
+                voluntary: undefined
             }
         }
         return onSubmit(toSend)
@@ -81,6 +88,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
             label="Popis"
             type="textarea"
             fullWidth
+            multiline
             variant="standard"
             value={formValues.description}
             onChange={event => {
@@ -102,6 +110,18 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
             </div>
         </LocalizationProvider>
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="type">Typ příspěvku</InputLabel>
+            <Select
+                labelId="type"
+                id="type"
+                value={formValues.type}
+                label="Typ příspěvku"
+                onChange={event => handleInputChange("type", event.target.value)}
+            >
+              { postTypes.map(item => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>) }
+            </Select>
+        </FormControl>
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="subject">Předmět</InputLabel>
             <Select
                 labelId="subject"
@@ -113,7 +133,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
                 {subjects.map(item => <MenuItem key={item.shortcut} value={item.shortcut}>{item.name}</MenuItem>)}
             </Select>
         </FormControl>
-        {formValues.subject && currentSubject && currentSubject.groups.length > 1 ? 
+        {formValues.subject && currentSubject && currentSubject.groups.length > 1 ?
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="group">Skupina</InputLabel>
                 <Select
@@ -130,13 +150,17 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
             null
         }
         <br/>
-        <FormControlLabel 
-            control={<Switch 
-                checked={formValues.voluntary}
-                onChange={event => handleInputChange("voluntary", event.target.checked)}
-            />} 
-            label="Dobrovolné" 
-        />
+        { formValues.type === "homework" ?
+            <FormControlLabel
+                control={<Switch
+                    checked={formValues.voluntary}
+                    onChange={event => handleInputChange("voluntary", event.target.checked)}
+                />}
+                label="Dobrovolné"
+            />
+            :
+            null
+        }
     </DialogContent>
     <DialogActions>
         <Button onClick={handleClose}>Zavřít</Button>

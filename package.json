@@ -29,6 +29,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
+    "dev-start": "./node_modules/netlify-cli/bin/run dev",
     "start": "./node_modules/netlify-lambda/bin/cmd.js build src/lambda && react-scripts start",
     "build": "./node_modules/.bin/npm-run-all build:**",
     "build:app": "react-scripts build",
