@@ -35,7 +35,7 @@ export default function Homework(props) {
                 <h1>{homework.name}</h1>
                 <p>Termín: {format(new Date(homework.dueTime), "EEEE d. MMMM y H:mm", { locale: cs })}</p>
                 <p>Předmět: {homework.subjectFullName}</p>
-                <h3>Popis:</h3>       
+                <h3>Popis:</h3>
                 <p>{homework.description || ""}</p>
                 { homework.user === user.username ? 
                 <EditHomework postID={id} prevData={homework} onSubmit={getHomework}/>
