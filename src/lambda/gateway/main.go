@@ -38,17 +38,14 @@ func databaseWorking(w http.ResponseWriter, r *http.Request) {
 }
 
 func generateJWT(userID, username string) (string, error) {
-    secretKey :=
-        "-----BEGIN RSA PRIVATE KEY-----\n" +
-        "" +
-        "\n-----END RSA PRIVATE KEY-----"
-	var mySigningKey = []byte(secretkey)
+    secretKey := "-----BEGIN RSA PRIVATE KEY-----\n" + "" + "\n-----END RSA PRIVATE KEY-----"
+	var mySigningKey = []byte(secretKey)
 	token := jwt.New(jwt.SigningMethodRS256)
 	claims := token.Claims.(jwt.MapClaims)
 
 	claims["userID"] = userID
 	claims["username"] = username
-	claims["exp"] = time.Now().Add(time.Day * 14).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 24 * 14).Unix()
 
 	tokenString, err := token.SignedString(mySigningKey)
 
