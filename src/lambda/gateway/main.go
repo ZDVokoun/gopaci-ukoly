@@ -56,6 +56,20 @@ func generateJWT(userID, username string) (string, error) {
 	return tokenString, nil
 }
 
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+	switch url := r.URL.Path; url {
+	case "/api/helloworld":
+		func(w http.ResponseWriter, r *http.Request){
+			fmt.Fprintf(w, "Hello World!")
+		}(w,r)
+	case "/api/working":
+		databaseWorking(w,r)
+	default:
+		fmt.Println("Error 404 " + url)
+		fmt.Fprintf(w, "404 Not Found")
+	}
+
+}
 func main() {
     port := flag.Int("port", -1, "specify a port to use http rather than AWS Lambda")
     flag.Parse()
@@ -64,13 +78,14 @@ func main() {
     if *port != -1 {
         portStr = fmt.Sprintf(":%d", *port)
         listener = http.ListenAndServe
-        http.Handle("/", http.FileServer(http.Dir("./build")))
+        // http.Handle("/", http.FileServer(http.Dir("./build")))
         fmt.Println("Running")
     }
+	http.HandleFunc("/", rootHandler)
 
-    http.HandleFunc("/api/helloworld", func(w http.ResponseWriter, r *http.Request){
-		fmt.Fprintf(w, "Hello World!")
-	})
-    http.HandleFunc("/api/working", databaseWorking)
+    // http.HandleFunc("/api/helloworld", func(w http.ResponseWriter, r *http.Request){
+	//	fmt.Fprintf(w, "Hello World!")
+	// })
+    // http.HandleFunc("/api/working", databaseWorking)
     log.Fatal(listener(portStr, nil))
 }
