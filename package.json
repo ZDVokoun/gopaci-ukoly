@@ -33,7 +33,7 @@
     "start": "react-scripts start",
     "start-go": "make build && chmod +x ./built-lambda/gateway && ./built-lambda/gateway -port 8000",
     "build": "./node_modules/.bin/npm-run-all build:**",
-    "build:app": "react-scripts build && cp _redirects /build/",
+    "build:app": "react-scripts build && cp _redirects build/_redirects",
     "build:lambda": "make build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
