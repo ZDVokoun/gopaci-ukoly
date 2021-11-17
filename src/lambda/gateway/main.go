@@ -8,12 +8,17 @@ import (
     "context"
     "time"
 
-    "github.com/apex/gateway"
+    // "github.com/apex/gateway"
+	handlefunc "github.com/awslabs/aws-lambda-go-api-proxy/handlefunc"
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
     "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
     "github.com/golang-jwt/jwt"
     // "go.mongodb.org/mongo-driver/bson"
 )
+
+var handlefuncLambda *handlefunc.HandleFuncAdapter
 
 func createClient() (*mongo.Client, error) {
     uri := "mongodb+srv://spravce:***REMOVED***@cluster0.u4fbx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
@@ -58,11 +63,11 @@ func generateJWT(userID, username string) (string, error) {
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	switch url := r.URL.Path; url {
-	case "/api/helloworld":
+	case "/api/helloworld" || "/.netlify/functions/gateway/api/helloworld":
 		func(w http.ResponseWriter, r *http.Request){
 			fmt.Fprintf(w, "Hello World!")
 		}(w,r)
-	case "/api/working":
+	case "/api/working" || "/.netlify/functions/gateway/api/working":
 		databaseWorking(w,r)
 	default:
 		fmt.Println("Error 404 " + url)
@@ -70,22 +75,30 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (event.APIGatewayProxyResponse, error) {
+	if handlefuncLambda == nil {
+		httpHandler := http.HandleFunc("/", rootHandler)
+		handlefuncLambda = handlefunc.NewV2(httpHandler);
+	}
+	return handlefuncLambda.ProxyWithContext(ctx, req)
+}
+
 func main() {
     port := flag.Int("port", -1, "specify a port to use http rather than AWS Lambda")
     flag.Parse()
-    listener := gateway.ListenAndServe
-    portStr := "n/a"
     if *port != -1 {
-        portStr = fmt.Sprintf(":%d", *port)
-        listener = http.ListenAndServe
+        portStr := fmt.Sprintf(":%d", *port)
+		http.HandleFunc("/", rootHandler)
         // http.Handle("/", http.FileServer(http.Dir("./build")))
         fmt.Println("Running")
-    }
-	http.HandleFunc("/", rootHandler)
+		log.Fatal(http.ListenAndServe(portStr, nil))
+    } else {
+		lambda.Start(Handler)
+	}
 
     // http.HandleFunc("/api/helloworld", func(w http.ResponseWriter, r *http.Request){
 	//	fmt.Fprintf(w, "Hello World!")
 	// })
     // http.HandleFunc("/api/working", databaseWorking)
-    log.Fatal(listener(portStr, nil))
 }
