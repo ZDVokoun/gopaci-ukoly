@@ -18,7 +18,7 @@ import (
     // "go.mongodb.org/mongo-driver/bson"
 )
 
-var handlerfuncLambda *handlerfunc.HandlerFuncAdapterV2
+var handlerfuncLambda *handlerfunc.HandlerFuncAdapter
 
 func createClient() (*mongo.Client, error) {
     uri := "mongodb+srv://spravce:***REMOVED***@cluster0.u4fbx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
@@ -76,9 +76,9 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+func Handler(ctx context.Context, req events.APIGatewayHTTPRequest) (events.APIGatewayHTTPResponse, error) {
 	if handlerfuncLambda == nil {
-		handlerfuncLambda = handlerfunc.NewV2(http.HandlerFunc(rootHandler));
+		handlerfuncLambda = handlerfunc.New(http.HandlerFunc(rootHandler));
 	}
 	return handlerfuncLambda.ProxyWithContext(ctx, req)
 }
