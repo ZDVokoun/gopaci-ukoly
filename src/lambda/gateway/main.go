@@ -9,7 +9,7 @@ import (
     "time"
 
     // "github.com/apex/gateway"
-	handlefunc "github.com/awslabs/aws-lambda-go-api-proxy/handlefunc"
+	"github.com/awslabs/aws-lambda-go-api-proxy/handlerfunc"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
     "go.mongodb.org/mongo-driver/mongo"
@@ -18,7 +18,7 @@ import (
     // "go.mongodb.org/mongo-driver/bson"
 )
 
-var handlefuncLambda *handlefunc.HandleFuncAdapter
+var handlerfuncLambda *handlerfunc.HandlerFuncAdapterV2
 
 func createClient() (*mongo.Client, error) {
     uri := "mongodb+srv://spravce:***REMOVED***@cluster0.u4fbx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
@@ -63,11 +63,11 @@ func generateJWT(userID, username string) (string, error) {
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	switch url := r.URL.Path; url {
-	case "/api/helloworld" || "/.netlify/functions/gateway/api/helloworld":
+	case "/api/helloworld", "/.netlify/functions/gateway/api/helloworld":
 		func(w http.ResponseWriter, r *http.Request){
 			fmt.Fprintf(w, "Hello World!")
 		}(w,r)
-	case "/api/working" || "/.netlify/functions/gateway/api/working":
+	case "/api/working", "/.netlify/functions/gateway/api/working":
 		databaseWorking(w,r)
 	default:
 		fmt.Println("Error 404 " + url)
@@ -76,12 +76,11 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (event.APIGatewayProxyResponse, error) {
-	if handlefuncLambda == nil {
-		httpHandler := http.HandleFunc("/", rootHandler)
-		handlefuncLambda = handlefunc.NewV2(httpHandler);
+func Handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	if handlerfuncLambda == nil {
+		handlerfuncLambda = handlerfunc.NewV2(rootHandler);
 	}
-	return handlefuncLambda.ProxyWithContext(ctx, req)
+	return handlerfuncLambda.ProxyWithContext(ctx, req)
 }
 
 func main() {
