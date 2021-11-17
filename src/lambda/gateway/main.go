@@ -78,7 +78,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 func Handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	if handlerfuncLambda == nil {
-		handlerfuncLambda = handlerfunc.NewV2(rootHandler);
+		handlerfuncLambda = handlerfunc.NewV2(http.HandlerFunc(rootHandler));
 	}
 	return handlerfuncLambda.ProxyWithContext(ctx, req)
 }
