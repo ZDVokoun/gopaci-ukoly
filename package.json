@@ -31,7 +31,7 @@
   "scripts": {
     "dev-start": "./node_modules/netlify-cli/bin/run dev",
     "start": "react-scripts start",
-    "start-go": "make build && chmod +x ./built-lambda/gateway && ./built-lambda/gateway -port 8000",
+    "start-go": "JWT_SECRET_KEY=$(grep 'JWT_SECRET_KEY' .env.local | cut -d '=' -f2) MONGODB_PASSWORD=$(grep 'MONGODB_PASSWORD' .env.local | cut -d '=' -f2) make build && chmod +x ./built-lambda/gateway && ./built-lambda/gateway -port 8000",
     "build": "./node_modules/.bin/npm-run-all build:**",
     "build:app": "react-scripts build && cp _redirects build/_redirects",
     "build:lambda": "make build",
