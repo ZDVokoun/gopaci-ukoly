@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { createJwtCookie } from "../helpers/jwt-helper";
 
 export async function handler(event) {
-    if (event.httpMethod != "POST") {
+    if (event.httpMethod !== "POST") {
         return {
             statusCode: 400,
             body: JSON.stringify("Bad Request")
@@ -62,6 +62,7 @@ export async function handler(event) {
             body: JSON.stringify({id: userId, username})
         }
     } catch (err) {
+        console.error(err);
         return {
             statusCode: errorStatusCode,
             body: JSON.stringify({msg: err.message, input: event})
