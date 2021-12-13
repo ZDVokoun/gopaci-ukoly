@@ -29,7 +29,8 @@ export async function handler(event) {
             errorStatusCode = 401;
             throw new Error("Invalid password or username");
         }
-        const matches = await bcrypt.compare(password, existingUser.password);
+        const passwordHash = existingUser.hashedPassword || existingUser.password;
+        const matches = await bcrypt.compare(password, passwordHash);
         if (!matches) {
             await logins.insertOne({
                 "successful": false,

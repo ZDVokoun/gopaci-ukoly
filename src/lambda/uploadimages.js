@@ -6,7 +6,7 @@ export async function handler(event) {
     const dbClient = createClient();
     const payload = jwtExtract(event.headers.cookie);
     try {
-        if (event.httpMethod != "POST") {
+        if (event.httpMethod !== "POST") {
             errorStatusCode = 400;
             throw new Error("Bad request");
         } 
@@ -27,7 +27,7 @@ export async function handler(event) {
         console.error(err);
         return {
             statusCode: errorStatusCode,
-            body: JSON.stringify({msg: new String(err)})
+            body: JSON.stringify({msg: String(err)})
         }
     } finally {
         dbClient.close();
