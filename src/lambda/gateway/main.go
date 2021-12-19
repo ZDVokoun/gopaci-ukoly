@@ -23,8 +23,6 @@ func databaseWorking(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "Success")
 }
 
-
-
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	switch url := r.URL.Path; url {
 	case "/api/helloworld", "/.netlify/functions/gateway/api/helloworld":

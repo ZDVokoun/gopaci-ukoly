@@ -5,13 +5,23 @@ import (
     "time"
     "net/http"
     "github.com/golang-jwt/jwt"
+	"crypto/x509"
+	"encoding/pem"
+	"errors"
 )
 
 var secretJWTKey string
 
 func generateJWT(userID, username string) (http.Cookie, error) {
-    secretKey := "-----BEGIN RSA PRIVATE KEY-----\n" + secretJWTKey + "\n-----END RSA PRIVATE KEY-----"
-	var mySigningKey = []byte(secretKey)
+    secretKeyPem := "-----BEGIN RSA PRIVATE KEY-----\n" + secretJWTKey + "\n-----END RSA PRIVATE KEY-----"
+	secretKeyBlock, _ := pem.Decode([]byte(secretKeyPem))
+	if secretKeyBlock == nil {
+		return http.Cookie{}, errors.New("failed to parse PEM block")
+	}
+	mySigningKey, err := x509.ParsePKCS1PrivateKey(secretKeyBlock.Bytes)
+	if err != nil {
+		return http.Cookie{}, err
+	}
 	token := jwt.New(jwt.SigningMethodRS256)
 	claims := token.Claims.(jwt.MapClaims)
 
