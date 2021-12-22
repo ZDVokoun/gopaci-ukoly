@@ -9,6 +9,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 import { Agenda } from "../components/agendaview";
 import Loading from "../components/loading.js";
 import { Error } from "./error.js";
+import { getCache, setCache } from "../helpers/cache-helper"
 
 const locales = {
     "cs-CZ": cs
@@ -27,21 +28,33 @@ export default function Homeworks (props) {
     const [settings, setSettings] = useState({homeworks: {}});
     const [error, setError] = useState(null);
 
-    const getHomeworks = () => sendRequest("gethomeworks").then(data => setHomeworks(data)).catch(err => setError(err));
+    const getHomeworks = () => sendRequest("gethomeworks")
+            .then(data => {
+                setHomeworks(data)
+                setCache("homeworks", data);
+            })
+            .catch(err => setError(err));
+    const getSettings = () => {
+        const localSettingsJSON = localStorage.getItem("settings");
+        const localSettings = localSettingsJSON && JSON.parse(localSettingsJSON);
+        localSettings && setSettings(localSettings);
+    }
     const handleSettingsChange = event => {
-        setSettings({...settings, homeworks: {...settings.homeworks, [event.target.id]: event.target.checked, }});
+        let newSettings = {...settings, homeworks: {...settings.homeworks, [event.target.id]: event.target.checked, }}
+        setSettings(newSettings);
+        localStorage.setItem("settings", JSON.stringify(newSettings))
     }
     const updateList = () => setTimeout(() => {
         getHomeworks();
     }, 1000)
 
     useEffect(() => {
-        const localSettingsJSON = localStorage.getItem("settings");
-        const localSettings = localSettingsJSON && JSON.parse(localSettingsJSON);
-        localSettings && setSettings(localSettings);
+        getSettings();
+        let homeworksCache = getCache("homeworks")
+        console.log(homeworksCache)
+        homeworksCache && setHomeworks(homeworksCache)
         getHomeworks();
     }, []);
-    useEffect(() => localStorage.setItem("settings", JSON.stringify(settings)), [settings])
 
     return homeworks === null ? (error ? <Error msg={error} /> : <Loading/>) : (
         <div id="homeworks">

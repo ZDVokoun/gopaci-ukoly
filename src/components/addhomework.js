@@ -5,7 +5,8 @@ import { DateTimePicker, LocalizationProvider } from "@mui/lab"
 import { sendRequest } from "../helpers/http-helper.js";
 import { useState, useEffect } from "react";
 import EditIcon from '@mui/icons-material/Edit';
-
+import { getCache, setCache } from "../helpers/cache-helper"
+import cs from "date-fns/locale/cs"
 
 function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     const defaultSelection = {
@@ -25,7 +26,16 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     }
     const [formValues, setFormValues] = useState(inputData ? dataFromProps(inputData) : defaultSelection);
     const [subjects, setSubjects] = useState([]);
-    useEffect(() => sendRequest("getsubjects").then(res => setSubjects(res)).catch(err => alert(err)), [])
+    useEffect(() => {
+        const subjectCache = getCache("subjects")
+        subjectCache && setSubjects(subjectCache)
+        sendRequest("getsubjects")
+            .then(res => {
+                setSubjects(res)
+                setCache("subjects", res)
+            })
+            .catch(err => alert(err))
+    }, [])
 
     const currentSubject = subjects.find(subject => formValues.subject === subject.shortcut);
 
@@ -97,7 +107,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
             }}
         />
         <br/>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} locale={cs}>
             <div className="dateInput">
                 <DateTimePicker
                     id="dueTime"
