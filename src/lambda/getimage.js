@@ -8,7 +8,7 @@ export async function handler(event) {
     const payload = jwtExtract(event.headers.cookie);
     const id = event.queryStringParameters.id;
     try {
-        if (event.httpMethod != "GET" && !id) {
+        if (event.httpMethod !== "GET" && !id) {
             errorStatusCode = 400;
             throw new Error("Bad request");
         } 
@@ -32,7 +32,7 @@ export async function handler(event) {
         console.error(err);
         return {
             statusCode: errorStatusCode,
-            body: JSON.stringify({msg: new String(err)})
+            body: JSON.stringify({msg: String(err)})
         }
     } finally {
         dbClient.close();
