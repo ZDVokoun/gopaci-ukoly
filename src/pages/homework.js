@@ -24,6 +24,11 @@ export default function Homework(props) {
             setCache("homework" + id, res)
         })
         .catch(err => setError(err));
+    const switchDoneValue = () => {
+        const switched = {...homework, done: !homework.done}
+        setHomework(switched)
+        setCache("homework" + id, switched)
+    }
     useEffect(() => {
         if (!id || id === ":id") props.history.push("/homeworks");
         const homeworkCache = getCache("homework" + id)
@@ -35,7 +40,7 @@ export default function Homework(props) {
         (<div className="homework">
             <div style={{paddingTop: 10}}>
                 <Button size="large" startIcon={<ArrowBack/>} onClick={() => props.history.push("/homeworks")}>Zpět</Button>
-                <DoneButton postID={id} isDone={homework.done} type={homework["type"]} onSubmit={getHomework} />
+                <DoneButton postID={id} isDone={homework.done} type={homework["type"]} onSubmit={switchDoneValue} />
             </div>
             <div>
                 <h1>{homework.name}</h1>
