@@ -11,6 +11,7 @@ import Loading from "../components/loading"
 import DoneButton from "../components/doneButton.js";
 import { Button } from "@mui/material";
 import ArrowBack from '@mui/icons-material/ArrowBackIosNew';
+import { getCache, setCache } from "../helpers/cache-helper"
 
 export default function Homework(props) {
     const { user } = useAuth();
@@ -18,10 +19,15 @@ export default function Homework(props) {
     const [homework, setHomework] = useState(null);
     const [error, setError] = useState(null);
     const getHomework = () => sendRequest(`gethomeworks?id=${id}`)
-        .then(res => setHomework(res))
+        .then(res => {
+            setHomework(res);
+            setCache("homework" + id, res)
+        })
         .catch(err => setError(err));
     useEffect(() => {
         if (!id || id === ":id") props.history.push("/homeworks");
+        const homeworkCache = getCache("homework" + id)
+        homeworkCache && setHomework(homeworkCache)
         getHomework();
         // eslint-disable-next-line
     }, []);
