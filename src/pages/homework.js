@@ -11,6 +11,7 @@ import Loading from "../components/loading"
 import DoneButton from "../components/doneButton.js";
 import { Button } from "@mui/material";
 import ArrowBack from '@mui/icons-material/ArrowBackIosNew';
+import { getCache, setCache } from "../helpers/cache-helper"
 
 export default function Homework(props) {
     const { user } = useAuth();
@@ -18,10 +19,20 @@ export default function Homework(props) {
     const [homework, setHomework] = useState(null);
     const [error, setError] = useState(null);
     const getHomework = () => sendRequest(`gethomeworks?id=${id}`)
-        .then(res => setHomework(res))
+        .then(res => {
+            setHomework(res);
+            setCache("homework" + id, res)
+        })
         .catch(err => setError(err));
+    const switchDoneValue = () => {
+        const switched = {...homework, done: !homework.done}
+        setHomework(switched)
+        setCache("homework" + id, switched)
+    }
     useEffect(() => {
         if (!id || id === ":id") props.history.push("/homeworks");
+        const homeworkCache = getCache("homework" + id)
+        homeworkCache && setHomework(homeworkCache)
         getHomework();
         // eslint-disable-next-line
     }, []);
@@ -29,7 +40,7 @@ export default function Homework(props) {
         (<div className="homework">
             <div style={{paddingTop: 10}}>
                 <Button size="large" startIcon={<ArrowBack/>} onClick={() => props.history.push("/homeworks")}>Zpět</Button>
-                <DoneButton postID={id} isDone={homework.done} type={homework["type"]} onSubmit={getHomework} />
+                <DoneButton postID={id} isDone={homework.done} type={homework["type"]} onSubmit={switchDoneValue} />
             </div>
             <div>
                 <h1>{homework.name}</h1>
