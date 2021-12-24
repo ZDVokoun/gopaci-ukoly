@@ -12,18 +12,24 @@ import DoneButton from "../components/doneButton.js";
 import { Button } from "@mui/material";
 import ArrowBack from '@mui/icons-material/ArrowBackIosNew';
 import { getCache, setCache } from "../helpers/cache-helper"
+import { ReloadButton } from "../components/buttonsWithProgress"
 
 export default function Homework(props) {
     const { user } = useAuth();
     const { id } = useParams();
     const [homework, setHomework] = useState(null);
     const [error, setError] = useState(null);
-    const getHomework = () => sendRequest(`gethomeworks?id=${id}`)
-        .then(res => {
-            setHomework(res);
-            setCache("homework" + id, res)
-        })
-        .catch(err => setError(err));
+    const [isLoading, setIsLoading] = useState(true);
+    const getHomework = () => {
+        setIsLoading(true)
+        return sendRequest(`gethomeworks?id=${id}`)
+            .then(res => {
+                setHomework(res);
+                setCache("homework" + id, res)
+                setIsLoading(false)
+            })
+            .catch(err => setError(err));
+    }
     const switchDoneValue = () => {
         const switched = {...homework, done: !homework.done}
         setHomework(switched)
@@ -38,9 +44,11 @@ export default function Homework(props) {
     }, []);
     return (homework === null ? (error ? <Error msg={error} /> : <Loading/>) :
         (<div className="homework">
-            <div style={{paddingTop: 10}}>
+           <div style={{paddingTop: 10, display: "flex"}}>
                 <Button size="large" startIcon={<ArrowBack/>} onClick={() => props.history.push("/homeworks")}>Zpět</Button>
                 <DoneButton postID={id} isDone={homework.done} type={homework["type"]} onSubmit={switchDoneValue} />
+                <div style={{flexGrow: 1}}></div>
+                <ReloadButton isLoading={isLoading} onClick={getHomework}/>
             </div>
             <div>
                 <h1>{homework.name}</h1>

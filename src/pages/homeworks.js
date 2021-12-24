@@ -10,6 +10,7 @@ import { Agenda } from "../components/agendaview";
 import Loading from "../components/loading.js";
 import { Error } from "./error.js";
 import { getCache, setCache } from "../helpers/cache-helper"
+import { ReloadButton } from "../components/buttonsWithProgress"
 
 const locales = {
     "cs-CZ": cs
@@ -27,13 +28,18 @@ export default function Homeworks (props) {
     const [homeworks, setHomeworks] = useState(null);
     const [settings, setSettings] = useState({homeworks: {}});
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true)
 
-    const getHomeworks = () => sendRequest("gethomeworks")
+    const getHomeworks = () => {
+        setIsLoading(true);
+        return sendRequest("gethomeworks")
             .then(data => {
                 setHomeworks(data)
+                setIsLoading(false)
                 setCache("homeworks", data);
             })
             .catch(err => setError(err));
+    }
     const getSettings = () => {
         const localSettingsJSON = localStorage.getItem("settings");
         const localSettings = localSettingsJSON && JSON.parse(localSettingsJSON);
@@ -58,6 +64,10 @@ export default function Homeworks (props) {
 
     return homeworks === null ? (error ? <Error msg={error} /> : <Loading/>) : (
         <div id="homeworks">
+            <div style={{display:"flex"}}>
+                <div style={{flexGrow: 1}}></div>
+                <ReloadButton onClick={getHomeworks} isLoading={isLoading}/>
+            </div>
             <Box sx={{display: {xs: "none", sm: "block"}, height: "90%"}}>
                 <Calendar
                     culture="cs-CZ"
