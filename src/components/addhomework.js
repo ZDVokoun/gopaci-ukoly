@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Select, MenuItem, Switch, FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Fab, FormControl, InputLabel } from "@mui/material";
+import { CircularProgress, Select, MenuItem, Switch, FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Fab, FormControl, InputLabel } from "@mui/material";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from "@mui/lab"
 import { sendRequest } from "../helpers/http-helper.js";
@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import { getCache, setCache } from "../helpers/cache-helper"
 import cs from "date-fns/locale/cs"
+
 
 function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     const defaultSelection = {
@@ -26,6 +27,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     }
     const [formValues, setFormValues] = useState(inputData ? dataFromProps(inputData) : defaultSelection);
     const [subjects, setSubjects] = useState([]);
+    const [submited, setSubmited] = useState(false)
     useEffect(() => {
         const subjectCache = getCache("subjects")
         subjectCache && setSubjects(subjectCache)
@@ -53,14 +55,15 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     }
 
     const handleSubmit = () => {
+        setSubmited(true);
         let toSend = formValues;
-        if (currentSubject.groups.length === 1) {
+        if (currentSubject && currentSubject.groups.length === 1) {
             toSend = {
                 ...formValues,
                 group: currentSubject.groups[0]
             }
         }
-        if (formValues.type !== "homework") {
+        if (formValues && formValues.type !== "homework") {
             toSend = {
                 ...toSend,
                 voluntary: undefined
@@ -71,7 +74,8 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
                 setOpen(false);
                 setFormValues(defaultSelection);
             })
-            .catch(err => alert(err));
+            .catch(err => alert(err))
+            .finally(() => setSubmited(false));
     }
 
 
@@ -174,7 +178,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     </DialogContent>
     <DialogActions>
         <Button onClick={handleClose}>Zavřít</Button>
-        <Button onClick={handleSubmit}>Zveřejnit</Button>
+            <Button onClick={handleSubmit}>{ submited && <CircularProgress size="14px" style={{marginRight: 10}}/> } Zveřejnit</Button>
     </DialogActions>
 </Dialog>)
 }

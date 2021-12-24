@@ -1,7 +1,7 @@
 import { useAuth } from "../providers/auth-provider";
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
-import { Button, Card, TextField } from "@mui/material";
+import { Button, Card, CircularProgress, TextField } from "@mui/material";
 
 export function Login(props) {
     const { user, login } = useAuth();
@@ -9,8 +9,10 @@ export function Login(props) {
     const redirectTo = prevPath || "/";
     const [ username, setUsername ] = useState("");
     const [ password, setPassword ] = useState("");
+    const [ submited, setSubmited ] = useState(false);
     const handleSubmit = event => {
         event.preventDefault();
+        setSubmited(true);
         return login({username, password}).catch(error => alert(error))
     };
 
@@ -40,7 +42,7 @@ export function Login(props) {
                     variant="standard"
                     onChange={event => setPassword(event.target.value)}
                 />
-                <Button fullWidth type="submit">Přihlásit se</Button>
+        <Button fullWidth type="submit">{ submited && <CircularProgress size="14px" style={{marginRight: 10}}/> } Přihlásit se</Button>
             </form>
         </Card>
     )
