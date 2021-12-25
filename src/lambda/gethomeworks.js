@@ -2,13 +2,11 @@ import { ObjectId } from "mongodb";
 import { createClient } from "../helpers/db-helper";
 import { jwtExtract } from "../helpers/jwt-helper";
 
-
-
 export async function handler(event) {
     let errorStatusCode = 500;
     const dbClient = createClient();
     try {
-        if (event.httpMethod != "GET") {
+        if (event.httpMethod !== "GET") {
             errorStatusCode = 400;
             throw new Error("Bad request");
         }
@@ -42,7 +40,7 @@ export async function handler(event) {
                 .map(item => Object.assign(item, {userFullName: userList.find(user => item.user === user.username)["user"]}));
             const subjectFullName = (await subjects.findOne({shortcut: rawData.subject}, {name: 1})).name
             
-            data = Object.assign(rawData, {userFullName: userList.find(user => rawData.user === user.username)["user"], subjectFullName, comments: homeworkComments, done: new Boolean(isDone)});
+            data = Object.assign(rawData, {userFullName: userList.find(user => rawData.user === user.username)["user"], subjectFullName, comments: homeworkComments, done: Boolean(isDone)});
         } else {
             const userGroups = (await users.findOne({ username: username })).groups;
             const rawData = await homeworks.find({dueTime : { $gt:new Date() }}).toArray();

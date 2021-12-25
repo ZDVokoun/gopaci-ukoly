@@ -118,8 +118,8 @@ export function AddComment (props) {
         <input ref={fileInputRef} type="file" accept={allowedFileTypes.join(", ")} style={{display:"none"}} multiple onChange={handleFileChange} />
     </div>)
 }
-function Comment ({msg, userFullName, images, createDate}) {
-    return (<Card variant="outlined" className="comment">
+function Comment ({_id, msg, userFullName, images, createDate}) {
+    return (<Card variant="outlined" className="comment" id={_id}>
         <p className="commentAuthor">{userFullName}</p>
         <small>Napsáno: {format(createDate, "EEEE d. MMMM y", { locale: cs })}</small>
         <p>{msg}</p>
@@ -133,7 +133,7 @@ export function Comments ({comments}) {
         <h2>Komentáře:</h2>
         {comments.length > 0 
             ? 
-            comments.sort((first,second) => first.createDate - second.createDate).map(comment => <Comment {...comment}/>) 
+         comments.sort((first,second) => first.createDate - second.createDate).map(comment => <Comment key={comment._id} {...comment}/>)
             :
             "Nikdo zatím nic nenapsal ¯\\_(ツ)_/¯. Buďte první, kdo zde napíše komentář!"}
     </div>)
