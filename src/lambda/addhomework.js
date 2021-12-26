@@ -36,14 +36,14 @@ export async function handler(event) {
             const id = event.queryStringParameters.id;
             const insertion = {...req, "dueTime": new Date(req.dueTime), "lastModified": new Date()};
             await homeworks.updateOne({_id: new ObjectId(id)}, {$set: insertion})
-            sendNotifications(`Úkol "${req.name}" aktualizován`, `Uživatelem ${fullName} na předmět ${subject}`, `/homework/${id}`, subscriptions)
+            await sendNotifications(`Úkol "${req.name}" aktualizován`, `Uživatelem ${fullName} na předmět ${subject}`, `/homework/${id}`, subscriptions)
         } else {
             const { insertedId } = await homeworks.insertOne(Object.assign(req, {
                 "user": payload.username,
                 "dueTime": new Date(req.dueTime),
                 "createTime": new Date(),
             }))
-            sendNotifications(`Nový úkol "${req.name}" zveřejněn`, `Uživatelem ${fullName} na předmět ${subject}`, `/homework/${insertedId.toString()}`, subscriptions)
+            await sendNotifications(`Nový úkol "${req.name}" zveřejněn`, `Uživatelem ${fullName} na předmět ${subject}`, `/homework/${insertedId.toString()}`, subscriptions)
         }
         return {
             statusCode: 200,
