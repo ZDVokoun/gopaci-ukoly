@@ -6,7 +6,7 @@ const vapidDetails = {
   subject: process.env.VAPID_SUBJECT
 };
 
-export function sendNotifications(title, text, url, subscriptions) {
+export async function sendNotifications(title, text, url, subscriptions) {
   const notification = JSON.stringify({
     title,
     body: text,
@@ -16,10 +16,10 @@ export function sendNotifications(title, text, url, subscriptions) {
     TTL: 10000,
     vapidDetails: vapidDetails
   }
-  subscriptions.forEach(subscription => {
+  await subscriptions.forEach(async subscription => {
     const endpoint = subscription.endpoint;
     const id = endpoint.substring(endpoint.length - 8);
-    webpush.sendNotification(subscription, notification, options)
+    await webpush.sendNotification(subscription, notification, options)
       .catch(error => console.error(`Error occured when sending notification to ${id}: ${error}`))
   })
 }

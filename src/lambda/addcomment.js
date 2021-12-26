@@ -29,14 +29,14 @@ export async function handler(event) {
             user: payload.username,
             createDate: new Date()
         }))
-        sendNotifications(`Přidán nový komentář na úkol "${homework.name}"" od uživatele ${fullName}`, "", `/homework/${req.homework}#${insertedId.toString()}`, subscriptions)
+        await sendNotifications(`Přidán nový komentář na úkol "${homework.name}" od uživatele ${fullName}`, "", `/homework/${req.homework}#${insertedId.toString()}`, subscriptions)
 
         return {
             statusCode: 200,
             body: JSON.stringify({msg: "Success"})
         }
     } catch (err) {
-        console.error(err);
+        errorStatusCode === 500 && console.error(err);
         return {
             statusCode: errorStatusCode,
             body: JSON.stringify({msg: String(err)})
