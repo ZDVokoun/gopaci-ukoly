@@ -1,13 +1,35 @@
 import { useState } from "react";
 import { useAuth } from "../providers/auth-provider.js";
-import { Alert, CircularProgress, TextField, Button } from "@mui/material"
+import { Alert, CircularProgress, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, TextField, Button } from "@mui/material"
 import usePushNotifications from "../hooks/usePushNotifications"
+
+function ConfirmationDialog({ title, content, open, onConfirm, onClose }) {
+    return (
+        <Dialog
+          open={open}
+          onClose={onClose}
+        >
+            <DialogTitle>{ title }</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                  { content }
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={onClose} autofocus>Zpět</Button>
+                <Button onClick={onConfirm}>Souhlasím</Button>
+            </DialogActions>
+        </Dialog>
+    )
+}
 
 function NewPasswordForm() {
     const { changePassword } = useAuth();
+    const [open, setOpen] = useState(false);
     const [oldPass, setOldPass] = useState("");
     const [newPass, setNewPass] = useState("");
     const handleSubmit = () => {
+        setOpen(false)
         changePassword(oldPass, newPass).catch(error => alert(error));
     }
 
@@ -22,6 +44,7 @@ function NewPasswordForm() {
                 type="password"
                 autoComplete="current-password"
                 variant="standard"
+                value={oldPass}
                 onChange={event => setOldPass(event.target.value)}
             />
             <TextField
@@ -32,19 +55,29 @@ function NewPasswordForm() {
                 type="password"
                 autoComplete="new-password"
                 variant="standard"
+                value={newPass}
                 onChange={event => setNewPass(event.target.value)}
             />
-            <Button fullWidth onClick={handleSubmit}>Změnit heslo</Button>
+            <Button fullWidth onClick={ () => setOpen(true) }>Změnit heslo</Button>
+            <ConfirmationDialog
+                title="Opravdu chcete změnit heslo?"
+                content="Po změně hesla nebudete moct používat heslo původní."
+                open={open}
+                onClose={() => {
+                    setOpen(false);
+                    setNewPass("");
+                    setOldPass("");
+                }}
+                onConfirm={ handleSubmit }
+            />
         </div>)
 }
 function NotificationPage(props) {
     const {
-        userConsent,
         pushNotificationSupported,
         userSubscription,
         onClickTurnOnNotification,
         onClickUnsubscribe,
-        pushServerSubscriptionId,
         error,
         loading
     } = usePushNotifications();

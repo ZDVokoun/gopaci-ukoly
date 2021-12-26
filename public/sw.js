@@ -8,8 +8,7 @@ function receivePushNotification(event) {
     body: body,
     icon: "/favicon.ico",
     vibrate: [200, 100, 200],
-    badge: "/favicon.ico",
-    actions: [{ action: "Detail", title: "Více", icon: "https://via.placeholder.com/128/ff0000" }]
+    actions: [{ action: "Detail", title: "Více" }]
   };
   event.waitUntil(self.registration.showNotification(title, options));
 }

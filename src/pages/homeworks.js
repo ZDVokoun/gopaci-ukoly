@@ -57,7 +57,6 @@ export default function Homeworks (props) {
     useEffect(() => {
         getSettings();
         let homeworksCache = getCache("homeworks")
-        console.log(homeworksCache)
         homeworksCache && setHomeworks(homeworksCache)
         getHomeworks();
     }, []);
