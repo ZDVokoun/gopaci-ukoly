@@ -5,7 +5,7 @@
 import { useState, useEffect } from "react";
 import { sendRequest } from "../helpers/http-helper"
 
-const pushServerPublicKey = process.env.VAPID_PRIVATE_KEY;
+const pushServerPublicKey = "***REMOVED***"
 
 /**
  * checks if Push notification and service workers are supported by your browser
@@ -23,6 +23,7 @@ async function askUserPermission() {
 /**
  * shows a notification
  */
+/*
 function sendNotification(title, text) {
   const options = {
     body: text,
@@ -36,7 +37,7 @@ function sendNotification(title, text) {
     serviceWorker.showNotification(title, options);
   });
 }
-
+*/
 /**
  *
  */
