@@ -154,6 +154,9 @@ export default function usePushNotifications() {
             setError(err);
             setLoading(false);
         });
+    }).catch(err => {
+      setError(err)
+      setLoading(false)
     })
   }
   const onClickAskUserPermission = () => {
