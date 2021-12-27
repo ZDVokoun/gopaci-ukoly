@@ -159,59 +159,8 @@ export default function usePushNotifications() {
       setLoading(false)
     })
   }
-  const onClickAskUserPermission = () => {
-    setLoading(true);
-    setError(false);
-    askUserPermission().then(consent => {
-      setSuserConsent(consent);
-      if (consent !== "granted") {
-        setError({
-          name: "Consent denied",
-          message: "You denied the consent to receive notifications",
-          code: 0
-        });
-      }
-      setLoading(false);
-    })
-  };
-  //
 
-  /**
-   * define a click handler that creates a push notification subscription.
-   * Once the subscription is created, it uses the setUserSubscription hook
-   */
-  const onClickSusbribeToPushNotification = () => {
-    setLoading(true);
-    setError(false);
-    createNotificationSubscription()
-      .then(function(subscrition) {
-        setUserSubscription(subscrition);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Couldn't create the notification subscription", err, "name:", err.name, "message:", err.message, "code:", err.code);
-        setError(err);
-        setLoading(false);
-      });
-  };
 
-  /**
-   * define a click handler that sends the push susbcribtion to the push server.
-   * Once the subscription ics created on the server, it saves the id using the hook setPushServerSubscriptionId
-   */
-  const onClickSendSubscriptionToPushServer = () => {
-    setLoading(true);
-    setError(false);
-    sendRequest("pushsubscribe", {subscription: userSubscription})
-      .then(function(response) {
-        setPushServerSubscriptionId(response.id);
-        setLoading(false);
-      })
-      .catch(err => {
-        setLoading(false);
-        setError(err);
-      });
-  };
 
   const onClickUnsubscribe = () => {
     setLoading(true)
@@ -230,9 +179,6 @@ export default function usePushNotifications() {
    * returns all the stuff needed by a Component
    */
   return {
-    onClickAskUserPermission,
-    onClickSusbribeToPushNotification,
-    onClickSendSubscriptionToPushServer,
     onClickUnsubscribe,
     onClickTurnOnNotification,
     pushServerSubscriptionId,

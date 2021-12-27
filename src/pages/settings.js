@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../providers/auth-provider.js";
 import { Alert, CircularProgress, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, TextField, Button } from "@mui/material"
 import usePushNotifications from "../hooks/usePushNotifications"
@@ -74,6 +74,7 @@ function NewPasswordForm() {
 }
 function NotificationPage(props) {
     const {
+        userConsent,
         pushNotificationSupported,
         userSubscription,
         onClickTurnOnNotification,
@@ -81,10 +82,12 @@ function NotificationPage(props) {
         error,
         loading
     } = usePushNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => userConsent !== "granted" && onClickUnsubscribe(), [userConsent])
     return (
         <div>
           <h2>Notifikace</h2>
-          { error && <Alert severity="error">{error.message}</Alert> }
+          { error && <Alert severity="error">{JSON.stringify(error)}</Alert> }
           { !pushNotificationSupported && <p>Váš prohlížeč nebo systém nepodporuje notifikace. Pokud jste na operačním systému MacOS, použíjte prohlížeč Firefox nebo Chrome. Na operačním systému iOS bohužel není možnost notifikace zprovoznit.</p> }
           {loading && <p><CircularProgress size="14px"/>Načítání</p>}
           <Button disabled={ !pushNotificationSupported || userSubscription } onClick={onClickTurnOnNotification}>Zapnout notifikace</Button>
