@@ -23,7 +23,13 @@ export async function handler(event) {
         const users = dbClient.usersCollection();
         const homeworks = dbClient.homeworksCollection();
         const homework = await homeworks.findOne({_id: ObjectId(req.homework)})
-        const subscriptions = (await users.find({ subscriptions: { $exists: true }, groups: {$in: [homework.group]} }, {subscriptions: 1}).toArray()).map(item => item.subscriptions).flat(2)
+        const subscriptions =
+              (await users.find({
+                  subscriptions: { $exists: true },
+                  groups: {$in: [homework.group]},
+                  notifyAbout: {$in: ["comments"]},
+                  mutedUser: { $not: { $in: [payload.username] } }
+              }, {subscriptions: 1}).toArray()).map(item => item.subscriptions).flat(2)
         const fullName = (await users.findOne({ username: payload.username }, {user: 1})).user;
         const { insertedId } = await comments.insertOne(Object.assign(req, {
             user: payload.username,

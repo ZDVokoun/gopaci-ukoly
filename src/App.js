@@ -6,7 +6,7 @@ import { PrivateRoute } from "./components/privateroute";
 import { NotFound, ErrorBoundary } from './pages/error';
 import { Settings } from './pages/settings';
 import { Suspense, lazy } from 'react';
-import Loading from './components/loading';
+import { Loading } from './components/loading';
 const Homeworks = lazy(() => import("./pages/homeworks"))
 const Homework = lazy(() => import("./pages/homework"))
 
@@ -18,6 +18,7 @@ function App() {
         <Route path="/login" exact component={Login} />
         <div id="main">
           <Sidebar/>
+
           <ErrorBoundary>
             <Suspense fallback={<Loading/>}>
               <Switch>
