@@ -30,7 +30,7 @@ export async function handler(event) {
         const users = dbClient.usersCollection();
         const subjects = dbClient.subjectsCollection();
         const subject = (await subjects.findOne({shortcut: req.subject}, {name: 1})).name
-        const subscriptions = (await users.find({ subscriptions: { $exists: true }, groups: {$in: [req.group]}, notifyAbout: { $in: ["homeworks"] } }, {subscriptions: 1}).toArray()).map(item => item.subscriptions).flat(2)
+        const subscriptions = (await users.find({ subscriptions: { $exists: true }, groups: {$in: [req.group]}, notifyAbout: { $in: ["homeworks"] }, username: { $not: payload.username } }, {subscriptions: 1}).toArray()).map(item => item.subscriptions).flat(2)
         const fullName = (await users.findOne({username: payload.username}, {user: 1})).user
         if (event.queryStringParameters.id) {
             const id = event.queryStringParameters.id;
