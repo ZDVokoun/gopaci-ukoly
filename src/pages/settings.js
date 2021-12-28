@@ -98,7 +98,7 @@ function NotificationPage({ settings, sendChange }) {
     return (
         <div id="notificationsSettings">
           <h2>Notifikace</h2>
-          { error && <Alert severity="error">{JSON.stringify(error)}</Alert> }
+          { error && <Alert severity="error">{error.message + " Kód chyby: " + error.code}</Alert> }
           { !pushNotificationSupported && <p>Váš prohlížeč nebo systém nepodporuje notifikace. Pokud jste na operačním systému MacOS, použíjte prohlížeč Firefox nebo Chrome. Na operačním systému iOS bohužel není možnost notifikace zprovoznit.</p> }
           {loading && <p><CircularProgress size="14px"/>Načítání</p>}
           <Button disabled={ !pushNotificationSupported || userSubscription } onClick={onClickTurnOnNotification}>Zapnout notifikace</Button>
