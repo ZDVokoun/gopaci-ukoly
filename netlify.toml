@@ -4,6 +4,9 @@
 [build.environment]
   JWT_SECRET_KEY = "***REMOVED***"
   MONGODB_PASSWORD = "***REMOVED***"
+  VAPID_PRIVATE_KEY = "***REMOVED***"
+  VAPID_PUBLIC_KEY = "***REMOVED***"
+  VAPID_SUBJECT = "***REMOVED***"
 [[redirects]]
   from = "/*"
   to = "/index.html"

@@ -60,5 +60,6 @@
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
-  "lang": "cs" 
+  "lang": "cs",
+  "gcm_sender_id": "***REMOVED***"
 }

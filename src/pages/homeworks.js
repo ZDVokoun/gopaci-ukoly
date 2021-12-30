@@ -7,7 +7,7 @@ import { startOfWeek, format, parse, getDay } from "date-fns";
 import { cs } from "date-fns/locale"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import { Agenda } from "../components/agendaview";
-import Loading from "../components/loading.js";
+import { Loading } from "../components/loading.js";
 import { Error } from "./error.js";
 import { getCache, setCache } from "../helpers/cache-helper"
 import { ReloadButton } from "../components/buttonsWithProgress"
@@ -57,7 +57,6 @@ export default function Homeworks (props) {
     useEffect(() => {
         getSettings();
         let homeworksCache = getCache("homeworks")
-        console.log(homeworksCache)
         homeworksCache && setHomeworks(homeworksCache)
         getHomeworks();
     }, []);

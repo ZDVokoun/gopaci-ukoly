@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import { getCache, setCache } from "../helpers/cache-helper"
 import cs from "date-fns/locale/cs"
+import { useAuth } from "../providers/auth-provider"
 
 
 function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
@@ -28,6 +29,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     const [formValues, setFormValues] = useState(inputData ? dataFromProps(inputData) : defaultSelection);
     const [subjects, setSubjects] = useState([]);
     const [submited, setSubmited] = useState(false)
+    const { logout } = useAuth()
     useEffect(() => {
         const subjectCache = getCache("subjects")
         subjectCache && setSubjects(subjectCache)
@@ -36,7 +38,8 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
                 setSubjects(res)
                 setCache("subjects", res)
             })
-            .catch(err => alert(err))
+            .catch(err => err === "Unauthorized" ? logout() : alert(err))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const currentSubject = subjects.find(subject => formValues.subject === subject.shortcut);
