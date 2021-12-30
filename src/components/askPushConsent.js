@@ -27,8 +27,7 @@ function AskPushConsent(props) {
     p: 3,
     zIndex: 10
   }
-  return (
-    open &&
+  return open && (
     <Box sx={styles}>
       <h3 style={{margin: '5px 0px'}}>Povolit notifikace?</h3>
       <p style={{fontSize: 14, margin: '5px 0px'}}>Pokud jsi je zapnete, budou vám přicházet oznámení ihned po zveřejnění úkolu nebo komentáře</p>
