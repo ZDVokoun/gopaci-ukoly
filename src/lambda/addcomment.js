@@ -29,7 +29,7 @@ export async function handler(event) {
                   groups: {$in: [homework.group]},
                   notifyAbout: {$in: ["comments"]},
                   mutedUser: { $not: { $in: [payload.username] },
-                  username: { $not: payload.username } }
+                  username: { $not: {$regex: payload.username} } }
               }, {subscriptions: 1}).toArray()).map(item => item.subscriptions).flat(2)
         const fullName = (await users.findOne({ username: payload.username }, {user: 1})).user;
         const { insertedId } = await comments.insertOne(Object.assign(req, {
