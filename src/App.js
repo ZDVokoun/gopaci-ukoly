@@ -7,7 +7,7 @@ import { NotFound, ErrorBoundary } from './pages/error';
 import { Settings } from './pages/settings';
 import { Suspense, lazy } from 'react';
 import { Loading } from './components/loading';
-import { AskUserConsent } from './components/askPushConsent'
+import AskUserConsent from './components/askPushConsent'
 const Homeworks = lazy(() => import("./pages/homeworks"))
 const Homework = lazy(() => import("./pages/homework"))
 
