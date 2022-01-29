@@ -1,7 +1,7 @@
 import { Button, Card, TextField, Alert, Collapse } from "@mui/material";
 import { useState, createRef, useEffect } from "react";
 import imageCompression from "browser-image-compression";
-import { sendRequest } from "../helpers/http-helper.js";
+import http from "../helpers/http-helper.js";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale"
 
@@ -26,7 +26,7 @@ export function AddComment (props) {
                 }, 500);
             }, 5000);
         };
-        const commentSend = (data) => sendRequest("addcomment", data)
+        const commentSend = (data) => http.post("/api/content/comment", data)
             .then(() => {
                 setInput({msg: "", files: null})
                 setResponse({ok: true, msg: "Úspěšně odesláno", show: true});
@@ -59,7 +59,7 @@ export function AddComment (props) {
             }
             let data = []
             for (let file of compressed) data.push({name: file.name, type: file.type, content: await blobToBase64(file)});
-            return sendRequest("uploadimages", data)
+            return http.post("/api/content/images", data)
                 .then(res => commentSend({msg: input.msg, homework: props.id, images: res}))
                 .catch(err => handleError(err))
         } else {

@@ -3,7 +3,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { sendRequest } from "../helpers/http-helper"
+import http from "../helpers/http-helper"
 
 const pushServerPublicKey = "***REMOVED***"
 
@@ -99,7 +99,7 @@ export default function usePushNotifications() {
           applicationServerKey: pushServerPublicKey
         }).then(function(subscription) {
             setUserSubscription(subscription);
-            return sendRequest("pushsubscribe", {subscription: subscription}).then(() => setLoading(false))
+            return http.post("/api/settings/push", {subscription: subscription}).then(() => setLoading(false))
         })
       })
     }).catch(err => {
@@ -112,7 +112,7 @@ export default function usePushNotifications() {
 
   const onClickUnsubscribe = () => {
     setLoading(true)
-    return sendRequest("pushunsubscribe", {subscription: userSubscription})
+    return http.delete("/api/settings/push", {subscription: userSubscription})
       .then(() => userSubscription.unsubscribe()
         .then(() => {
             console.info('Successfully unsubscribed from push notifications.');

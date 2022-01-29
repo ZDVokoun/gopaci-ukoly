@@ -37,7 +37,12 @@ function clearCookie() {
     return "jwt=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
 }
 function jwtExtract(jwtcookie) {
-    const cookies = jwtcookie && cookie.parse(jwtcookie);
+    let cookies = {};
+    if (typeof jwtcookie === "string") {
+        cookies = jwtcookie && cookie.parse(jwtcookie);
+    } else {
+        cookies = jwtcookie;
+    }
     if (!cookies || !cookies.jwt) return;
     try {
         const payload = jwt.verify(cookies.jwt, publicKey);

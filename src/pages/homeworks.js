@@ -1,4 +1,4 @@
-import { sendRequest } from "../helpers/http-helper.js";
+import http from "../helpers/http-helper.js";
 import React, { useState, useEffect } from "react";
 import { Box, FormControlLabel, Switch } from "@mui/material";
 import { AddHomework } from "../components/addhomework";
@@ -32,7 +32,7 @@ export default function Homeworks (props) {
 
     const getHomeworks = () => {
         setIsLoading(true);
-        return sendRequest("gethomeworks")
+        return http.get("/api/content/homeworks")
             .then(data => {
                 setHomeworks(data)
                 setIsLoading(false)
