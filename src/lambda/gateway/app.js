@@ -89,7 +89,6 @@ app.post('/api/auth/login', async (req, res, next) => {
   const jwtCookie = createJwtCookie(userId, username);
   // await log({successful: true}, req)
 
-  db.close();
   res.set('Set-Cookie', jwtCookie)
   res.json({id: userId, username})
 })
