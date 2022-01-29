@@ -1,28 +1,66 @@
-export function sendRequest(endpoint, body) {
-    return new Promise(async (resolve, reject) => {
+const http = {
+    post: (endpoint, body) => new Promise(async (resolve, reject) => {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)
+        };
+        const response = await fetch(endpoint, requestOptions);
+        if (response.ok) {
+            resolve(await response.json())
+        } else {
+            reject(await response.text())
+        }
+    }),
+    put: (endpoint, body = {}) => new Promise(async (resolve, reject) => {
+        const requestOptions = {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)
+        };
+        const response = await fetch(endpoint, requestOptions);
+        if (response.ok) {
+            resolve(await response.json())
+        } else {
+            reject(await response.text())
+        }
+    }),
+    delete: (endpoint, body = {}) => new Promise(async (resolve, reject) => {
+        const requestOptions = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)
+        };
+        const response = await fetch(endpoint, requestOptions);
+        if (response.ok) {
+            resolve(await response.json())
+        } else {
+            reject(await response.text())
+        }
+    }),
+    get: (endpoint) => new Promise(async (resolve, reject) => {
         const requestOptions = {
             method: "GET",
             headers: {
-                Accept: "application/json",
+                "Accept": "application/json",
             },
         };
-        if (body) {
-            requestOptions.method = "POST";
-            requestOptions.headers["Content-Type"] = "application/json";
-            requestOptions.body = JSON.stringify(body);
-        }
-        const response = await fetch(
-            `/.netlify/functions/${endpoint}`,
-            requestOptions
-        );
-        const responseBody = await response.json();
+        const response = await fetch(endpoint, requestOptions);
         if (response.ok) {
-            resolve(responseBody);
+            resolve(await response.json())
         } else {
-            reject(responseBody.msg);
+            reject(await response.text())
         }
-    });
+    }),
 }
+
+export default http;
 
 export function debounce (func) {
     let timer;

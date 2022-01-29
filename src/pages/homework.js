@@ -1,4 +1,4 @@
-import { sendRequest } from "../helpers/http-helper.js";
+import http from "../helpers/http-helper.js";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
@@ -22,7 +22,7 @@ export default function Homework(props) {
     const [isLoading, setIsLoading] = useState(true);
     const getHomework = () => {
         setIsLoading(true)
-        return sendRequest(`gethomeworks?id=${id}`)
+        return http.get(`/api/content/homework/${id}`)
             .then(res => {
                 setHomework(res);
                 setCache("homework" + id, res)

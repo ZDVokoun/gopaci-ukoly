@@ -1,12 +1,15 @@
 import { Button } from "@mui/material";
 import { useMemo } from "react";
-import { sendRequest, debounce } from "../helpers/http-helper";
+import http, { debounce } from "../helpers/http-helper";
 import { Done, Replay } from '@mui/icons-material';
 
 export default function DoneButton({ postID, type = "homework", isDone = false, onSubmit = () => {} }) {
-    const handleSubmit = () => sendRequest((isDone ? "un" : "") + "done?id=" + postID)
-        .then(() => onSubmit())
-        .catch(res => alert(res));
+    const handleSubmit = () => {
+        const changeDone = isDone ? http.delete : http.put;
+        return changeDone("/api/content/done/" + postID)
+            .then(() => onSubmit())
+            .catch(res => alert(res));
+    }
     
     // eslint-disable-next-line
     const debouncedHandler = useMemo(() => debounce(handleSubmit), [isDone])

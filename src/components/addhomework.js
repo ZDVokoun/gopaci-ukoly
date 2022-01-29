@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { CircularProgress, Select, MenuItem, Switch, FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Fab, FormControl, InputLabel } from "@mui/material";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from "@mui/lab"
-import { sendRequest } from "../helpers/http-helper.js";
+import http from "../helpers/http-helper.js";
 import { useState, useEffect } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import { getCache, setCache } from "../helpers/cache-helper"
@@ -33,7 +33,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
     useEffect(() => {
         const subjectCache = getCache("subjects")
         subjectCache && setSubjects(subjectCache)
-        sendRequest("getsubjects")
+        http.get("/api/content/subjects")
             .then(res => {
                 setSubjects(res)
                 setCache("subjects", res)
@@ -188,7 +188,7 @@ function AddHomeworkDialog({open, setOpen, onSubmit, inputData}) {
 
 export function AddHomework (props) {
     const [open, setOpen] = useState(false);
-    const handleSubmit = formValues => sendRequest("addhomework", formValues)
+    const handleSubmit = formValues => http.post("/api/content/homework", formValues)
         .then(res => {
             if (props.onSubmit) props.onSubmit();
             return res;
@@ -206,7 +206,7 @@ export function AddHomework (props) {
 
 export function EditHomework(props) {
     const [open, setOpen] = useState(false);
-    const handleSubmit = (formValues) => sendRequest(`addhomework?id=${props.postID}`, formValues)
+    const handleSubmit = (formValues) => http.put(`/api/content/homework/${props.postID}`, formValues)
         .then(res => {
             if (props.onSubmit) props.onSubmit();
             return res;

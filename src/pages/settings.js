@@ -3,7 +3,7 @@ import { useAuth } from "../providers/auth-provider.js";
 import { Alert, Checkbox, CircularProgress, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, FormGroup, FormControlLabel, TextField, Button } from "@mui/material"
 import usePushNotifications from "../hooks/usePushNotifications"
 import { LoadingWithBackdrop } from "../components/loading"
-import { sendRequest } from "../helpers/http-helper"
+import http from "../helpers/http-helper"
 
 function ConfirmationDialog({ title, content, open, onConfirm, onClose }) {
     return (
@@ -115,7 +115,7 @@ function NotificationPage({ settings, sendChange }) {
 export function Settings(props) {
     const [loading, setLoading] = useState(true);
     const [settings, setSettings] = useState({});
-    useEffect(() => sendRequest("settings").then(res => {
+    useEffect(() => http.get("/api/settings").then(res => {
         setSettings(res)
         setLoading(false)
     }).catch((err) => {
@@ -124,8 +124,8 @@ export function Settings(props) {
     }), [])
     const onSubmit = () => {
         setLoading(true)
-        return sendRequest("settings", {settings}).then(() => {
-            sendRequest("settings").then(res => {
+        return http.post("/api/settings", {settings}).then(() => {
+            http.get("/api/settings").then(res => {
                 setSettings(res)
                 setLoading(false)
             }).catch(err => alert(err))
