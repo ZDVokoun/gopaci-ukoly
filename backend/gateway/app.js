@@ -54,7 +54,7 @@ function log(req, res, next) {
       const err = req.error;
       const obj = req.toLog;
       const toLog = {
-        IP: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        IP: req.ip,
         time: new Date(),
         method: req.method,
         url: req.url,
