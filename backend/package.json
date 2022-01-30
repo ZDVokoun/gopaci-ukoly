@@ -9,7 +9,6 @@
     "cookie": "^0.4.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.2",
-    "geoip-lite": "^1.4.3",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.1.2",
     "netlify-lambda": "^2.0.15",
