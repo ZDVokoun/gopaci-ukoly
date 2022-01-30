@@ -11,7 +11,7 @@
     "start:frontend": "cd frontend && yarn start",
     "build": "concurrently \"yarn build:backend\" \"yarn build:frontend\"",
     "build:backend": "cd backend && yarn build",
-    "build:frontend": "cd frontend && yarn build"
+    "build:frontend": "cd frontend && yarn build && mv build ../build && cd .. && cp _redirects build/_redirects"
   },
   "dependencies": {
     "concurrently": "^7.0.0"
