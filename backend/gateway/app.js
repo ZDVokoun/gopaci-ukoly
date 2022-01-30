@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { hasValues, passesWhitelist } from "./helpers/validation-helper.js";
 import { sendNotifications } from "./helpers/push-helper.js"
 import { ObjectId } from "mongodb";
+import requestIP from "request-ip";
 
 const app = express();
 let db = createClient();
@@ -54,7 +55,7 @@ function log(req, res, next) {
       const err = req.error;
       const obj = req.toLog;
       const toLog = {
-        IP: req.ip,
+        IP: requestIP.getClientIp(req),
         time: new Date(),
         method: req.method,
         url: req.url,
@@ -94,6 +95,7 @@ function log(req, res, next) {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.set('trust proxy', true)
 
 /*
  * Check if user is authorized before accessing content
