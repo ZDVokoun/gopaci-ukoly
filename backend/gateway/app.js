@@ -6,7 +6,6 @@ import cookieParser from "cookie-parser";
 import { hasValues, passesWhitelist } from "./helpers/validation-helper.js";
 import { sendNotifications } from "./helpers/push-helper.js"
 import { ObjectId } from "mongodb";
-import geoip from "geoip-lite";
 
 const app = express();
 let db = createClient();
@@ -54,10 +53,8 @@ function log(req, res, next) {
     return new Promise(async (resolve, reject) => {
       const err = req.error;
       const obj = req.toLog;
-      const geoIPLookup = geoip.lookup(req.headers['x-forwarded-for'] || req.connection.remoteAddress)
       const toLog = {
         IP: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-        town: geoIPLookup && geoIPLookup.town,
         time: new Date(),
         method: req.method,
         url: req.url,
