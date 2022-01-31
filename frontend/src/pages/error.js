@@ -1,4 +1,4 @@
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../providers/auth-provider";
 import { Component } from "react";
 
@@ -7,7 +7,7 @@ export function Error({ msg }) {
     if (msg === "NotFound") return <NotFound/>;
     else if (msg === "Unauthorized") {
         logout();
-        return <Redirect to="login"/>
+        return <div/>
     }
     else return (<div>
         <h1>Došlo k chybě! </h1>

@@ -10,8 +10,8 @@ function AuthProvider({ children }) {
         localStorage.setItem("user", JSON.stringify(user))
     }
     const deleteUser = () => {
-        setUser(null)
         localStorage.removeItem("user")
+        return setUser(null)
     }
     const login = user => http.post("/api/auth/login", user).then(body => saveUser(body));
     const logout = () => http.get("/api/auth/logout").then(() => deleteUser());
