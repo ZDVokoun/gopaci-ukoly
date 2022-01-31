@@ -7,6 +7,7 @@ import { startOfWeek, format, parse, getDay } from "date-fns";
 import { cs } from "date-fns/locale"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import { Agenda } from "../components/agendaview";
+import { Loading } from "../components/loading.js";
 import { Error } from "./error.js";
 import { getCache, setCache } from "../helpers/cache-helper"
 import { ReloadButton } from "../components/buttonsWithProgress"
@@ -37,7 +38,7 @@ export default function Homeworks (props) {
                 setIsLoading(false)
                 setCache("homeworks", data);
             })
-            .catch(setError);
+            .catch(err => setError(err));
     }
     const getSettings = () => {
         const localSettingsJSON = localStorage.getItem("settings");
@@ -60,7 +61,7 @@ export default function Homeworks (props) {
         getHomeworks();
     }, []);
 
-    return ( error ? <Error msg={error} /> :
+    return error ? <Error msg={error} /> : (homeworks === null ? <Loading/> :
         <div id="homeworks">
             <div style={{display:"flex"}}>
                 <div style={{flexGrow: 1}}></div>

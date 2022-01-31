@@ -7,6 +7,7 @@ import { AddComment, Comments } from "../components/comment";
 import { Error } from "./error";
 import { useAuth } from "../providers/auth-provider.js";
 import { EditHomework } from "../components/addhomework.js";
+import { Loading } from "../components/loading"
 import DoneButton from "../components/doneButton.js";
 import { Button } from "@mui/material";
 import ArrowBack from '@mui/icons-material/ArrowBackIosNew';
@@ -41,7 +42,7 @@ export default function Homework(props) {
         getHomework();
         // eslint-disable-next-line
     }, []);
-    return (error ? <Error msg={error} /> :
+    return (error ? <Error msg={error} /> : (homework === null ? <Loading /> :
         (<div className="homework">
            <div style={{paddingTop: 10, display: "flex"}}>
                 <Button size="large" startIcon={<ArrowBack/>} onClick={() => props.history.push("/homeworks")}>Zpět</Button>
@@ -66,7 +67,7 @@ export default function Homework(props) {
                 <hr/>
                 <Comments comments={homework.comments.map(item => {return {...item, createDate: new Date(item.createDate)}})}/>
             </div>
-        </div>)
+        </div>
         
-    )
+        )))
 }
