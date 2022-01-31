@@ -42,7 +42,7 @@ export default function Homework(props) {
         getHomework();
         // eslint-disable-next-line
     }, []);
-    return (homework === null ? (error ? <Error msg={error} /> : <Loading/>) :
+    return (error ? <Error msg={error} /> :
         (<div className="homework">
            <div style={{paddingTop: 10, display: "flex"}}>
                 <Button size="large" startIcon={<ArrowBack/>} onClick={() => props.history.push("/homeworks")}>Zpět</Button>

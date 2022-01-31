@@ -38,7 +38,7 @@ export default function Homeworks (props) {
                 setIsLoading(false)
                 setCache("homeworks", data);
             })
-            .catch(err => setError(err));
+            .catch(setError);
     }
     const getSettings = () => {
         const localSettingsJSON = localStorage.getItem("settings");
@@ -61,7 +61,7 @@ export default function Homeworks (props) {
         getHomeworks();
     }, []);
 
-    return homeworks === null ? (error ? <Error msg={error} /> : <Loading/>) : (
+    return ( error ? <Error msg={error} /> :
         <div id="homeworks">
             <div style={{display:"flex"}}>
                 <div style={{flexGrow: 1}}></div>
