@@ -7,7 +7,6 @@ import { AddComment, Comments } from "../components/comment";
 import { Error } from "./error";
 import { useAuth } from "../providers/auth-provider.js";
 import { EditHomework } from "../components/addhomework.js";
-import { Loading } from "../components/loading"
 import DoneButton from "../components/doneButton.js";
 import { Button } from "@mui/material";
 import ArrowBack from '@mui/icons-material/ArrowBackIosNew';
