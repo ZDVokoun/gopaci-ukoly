@@ -127,7 +127,6 @@ router.post('/api/auth/login', async (req, res, next) => {
 
   res.set('Set-Cookie', jwtCookie)
   res.json({id: userId, username})
-  next()
 })
 
 /*
@@ -144,7 +143,6 @@ router.post('/api/auth/changepassword', async (req, res, next) => {
   await db.usersCollection().updateOne({ username: req.payload.username }, {$set: {password: passwordHash}});
 
   res.json({ msg: "Success" })
-  next()
 })
 
 /*
@@ -153,7 +151,6 @@ router.post('/api/auth/changepassword', async (req, res, next) => {
 router.get('/api/auth/logout', (req, res) => {
   res.clearCookie();
   res.json({ msg: "Logged out successfully" })
-  next()
 })
 
 /*
