@@ -161,18 +161,18 @@ router.post('/api/content/homework', async (req, res, next) => {
   const requiredValues = ["name", "dueTime", "subject", "group"];
   const valueWhitelist = ["name", "dueTime", "subject", "group", "description", "voluntary", "preciseTime", "type"];
   if (
-    new Date(req.dueTime) < new Date()
-      || !hasValues(req, requiredValues)
-      || !passesWhitelist(req, valueWhitelist)
+    new Date(req.body.dueTime) < new Date()
+      || !hasValues(req.body, requiredValues)
+      || !passesWhitelist(req.body, valueWhitelist)
   ) throw (err(400, "Bad request"))
 
   // Get subject name for push notification
-  const subject = (await db.subjectsCollection().findOne({shortcut: req.subject}, {name: 1})).name
+  const subject = (await db.subjectsCollection().findOne({shortcut: req.body.subject}, {name: 1})).name
 
   // Get list of push subscriptions and filter them
   const subscriptions = (await db.usersCollection().find({
     subscriptions: { $exists: true },
-    groups: {$in: [req.group]},
+    groups: {$in: [req.body.group]},
     notifyAbout: { $in: ["homeworks"] },
     username: { $not: {$regex: req.payload.username} }
   }, {subscriptions: 1}).toArray()).map(item => item.subscriptions).flat(2)
@@ -181,14 +181,14 @@ router.post('/api/content/homework', async (req, res, next) => {
   const fullName = (await db.usersCollection().findOne({username: req.payload.username}, {user: 1}).catch(next)).user
 
   // Insert homework
-  const { insertedId } = await db.homeworksCollection().insertOne(Object.assign(req, {
+  const { insertedId } = await db.homeworksCollection().insertOne(Object.assign(req.body, {
     "user": req.payload.username,
-    "dueTime": new Date(req.dueTime),
+    "dueTime": new Date(req.body.dueTime),
     "createTime": new Date(),
   }))
 
   // Send notification
-  await sendNotifications(`Nový úkol "${req.name}" zveřejněn`, `Uživatelem ${fullName} na předmět ${subject}`, `/homework/${insertedId.toString()}`, subscriptions)
+  await sendNotifications(`Nový úkol "${req.body.name}" zveřejněn`, `Uživatelem ${fullName} na předmět ${subject}`, `/homework/${insertedId.toString()}`, subscriptions)
 
   res.json({msg: "Success"})
 
@@ -204,9 +204,9 @@ router.put('/api/content/homework/:id', async (req, res, next) => {
   const requiredValues = ["name", "dueTime", "subject", "group"];
   const valueWhitelist = ["name", "dueTime", "subject", "group", "description", "voluntary", "preciseTime", "type"];
   if (
-    new Date(req.dueTime) < new Date()
-      || !hasValues(req, requiredValues)
-      || !passesWhitelist(req, valueWhitelist)
+    new Date(req.body.dueTime) < new Date()
+      || !hasValues(req.body, requiredValues)
+      || !passesWhitelist(req.body, valueWhitelist)
   ) throw (err(400, "Bad request"))
 
   // Check if user posted the homework
@@ -214,12 +214,12 @@ router.put('/api/content/homework/:id', async (req, res, next) => {
   if (homework.user !== req.payload.username) throw (err(403, "Forbidden"))
 
   // Get subject name for push notification
-  const subject = (await db.subjectsCollection().findOne({shortcut: req.subject}, {name: 1})).name
+  const subject = (await db.subjectsCollection().findOne({shortcut: req.body.subject}, {name: 1})).name
 
   // Get list of push subscriptions and filter them
   const subscriptions = (await db.usersCollection().find({
     subscriptions: { $exists: true },
-    groups: {$in: [req.group]},
+    groups: {$in: [req.body.group]},
     notifyAbout: { $in: ["homeworks"] },
     username: { $not: {$regex: req.payload.username} }
   }, {subscriptions: 1}).toArray()).map(item => item.subscriptions).flat(2)
@@ -228,11 +228,11 @@ router.put('/api/content/homework/:id', async (req, res, next) => {
   const fullName = (await db.usersCollection().findOne({username: req.payload.username}, {user: 1})).user
 
   // Update homework
-  const insertion = {...req, "dueTime": new Date(req.dueTime), "lastModified": new Date()};
+  const insertion = {...req.body, "dueTime": new Date(req.body.dueTime), "lastModified": new Date()};
   await db.homeworksCollection().updateOne({_id: new ObjectId(id)}, {$set: insertion})
 
   // Send notification
-  await sendNotifications(`Úkol "${req.name}" aktualizován`, `Uživatelem ${fullName} na předmět ${subject}`, `/homework/${id}`, subscriptions)
+  await sendNotifications(`Úkol "${req.body.name}" aktualizován`, `Uživatelem ${fullName} na předmět ${subject}`, `/homework/${id}`, subscriptions)
 
   res.json({ msg: "Success" })
 })
