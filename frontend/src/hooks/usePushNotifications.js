@@ -3,9 +3,10 @@
  */
 
 import { useState, useEffect } from "react";
-import http from "../helpers/http-helper"
+import http from "../helpers/http-helper";
 
-const pushServerPublicKey = "***REMOVED***"
+const pushServerPublicKey =
+  "***REMOVED***";
 
 /**
  * checks if Push notification and service workers are supported by your browser
@@ -18,24 +19,22 @@ function registerServiceWorker() {
   return navigator.serviceWorker.register("/sw.js");
 }
 
-
 /**
  * returns the subscription if present or nothing
  */
 function getUserSubscription() {
   //wait for service worker installation to be ready, and then
   return navigator.serviceWorker.ready
-    .then(function(serviceWorker) {
+    .then(function (serviceWorker) {
       return serviceWorker.pushManager.getSubscription();
     })
-    .then(function(pushSubscription) {
+    .then(function (pushSubscription) {
       return pushSubscription;
     });
 }
 
-
-const pushNotificationSupported = isPushNotificationSupported();
 //first thing to do: check if the push notifications are supported by the browser
+const pushNotificationSupported = isPushNotificationSupported();
 
 export default function usePushNotifications() {
   const [userConsent, setUserConsent] = useState(Notification.permission);
@@ -82,48 +81,65 @@ export default function usePushNotifications() {
   const onClickTurnOnNotification = () => {
     setLoading(true);
     setError(false);
-    return Notification.requestPermission().then(consent => {
-      setUserConsent(consent);
-      if (consent !== "granted") {
-        setError({
-          name: "Consent denied",
-          message: "You denied the consent to receive notifications",
-          code: 0
+    return Notification.requestPermission()
+      .then((consent) => {
+        setUserConsent(consent);
+        if (consent !== "granted") {
+          setError({
+            name: "Consent denied",
+            message: "You denied the consent to receive notifications",
+            code: 0,
+          });
+          setLoading(false);
+          return;
+        }
+        return navigator.serviceWorker.ready.then((serviceWorker) => {
+          return serviceWorker.pushManager
+            .subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: pushServerPublicKey,
+            })
+            .then(function (subscription) {
+              setUserSubscription(subscription);
+              return http
+                .post("/api/settings/push", { subscription: subscription })
+                .then(() => setLoading(false));
+            });
         });
-        setLoading(false)
-        return
-      }
-      return navigator.serviceWorker.ready.then(serviceWorker => {
-        return serviceWorker.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: pushServerPublicKey
-        }).then(function(subscription) {
-            setUserSubscription(subscription);
-            return http.post("/api/settings/push", {subscription: subscription}).then(() => setLoading(false))
-        })
       })
-    }).catch(err => {
-      console.error("Couldn't create the notification subscription", err, "name:", err.name, "message:", err.message, "code:", err.code);
-      setError(err)
-      setLoading(false)
-      return
-    })
-  }
+      .catch((err) => {
+        console.error(
+          "Couldn't create the notification subscription",
+          err,
+          "name:",
+          err.name,
+          "message:",
+          err.message,
+          "code:",
+          err.code
+        );
+        setError(err);
+        setLoading(false);
+        return;
+      });
+  };
 
   const onClickUnsubscribe = () => {
-    setLoading(true)
-    return http.delete("/api/settings/push", {subscription: userSubscription})
-      .then(() => userSubscription.unsubscribe()
-        .then(() => {
-            console.info('Successfully unsubscribed from push notifications.');
-            setUserSubscription(null)
-            setLoading(false)
+    setLoading(true);
+    return http
+      .delete("/api/settings/push", { subscription: userSubscription })
+      .then(() =>
+        userSubscription.unsubscribe().then(() => {
+          console.info("Successfully unsubscribed from push notifications.");
+          setUserSubscription(null);
+          setLoading(false);
         })
-      ).catch(e => {
-        setError(e)
-        setLoading(false)
-      })
-  }
+      )
+      .catch((e) => {
+        setError(e);
+        setLoading(false);
+      });
+  };
 
   /**
    * returns all the stuff needed by a Component
@@ -135,6 +151,6 @@ export default function usePushNotifications() {
     pushNotificationSupported,
     userSubscription,
     error,
-    loading
+    loading,
   };
 }

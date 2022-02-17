@@ -130,7 +130,7 @@ router.post('/api/auth/login', async (req, res, next) => {
 })
 
 /*
- * Changes password
+ * Change password
  */
 router.post('/api/auth/changepassword', async (req, res, next) => {
   const { password, newPassword } = req.body;
@@ -146,7 +146,7 @@ router.post('/api/auth/changepassword', async (req, res, next) => {
 })
 
 /*
- * Logouts user (remove JWT cookie)
+ * Logout user (remove JWT cookie)
  */
 router.get('/api/auth/logout', (req, res) => {
   res.clearCookie();
@@ -154,7 +154,7 @@ router.get('/api/auth/logout', (req, res) => {
 })
 
 /*
- * Adds homework
+ * Add homework
  */
 router.post('/api/content/homework', async (req, res, next) => {
   // Value checking
@@ -195,7 +195,7 @@ router.post('/api/content/homework', async (req, res, next) => {
 })
 
 /*
- * Updates certaion homework
+ * Update certaion homework
  */
 router.put('/api/content/homework/:id', async (req, res, next) => {
   const id = req.params.id;
@@ -313,7 +313,7 @@ router.get('/api/content/homework/:id', async (req, res, next) => {
 })
 
 /*
- * Sets the homework as done
+ * Set the homework as done
  */
 router.put('/api/content/done/:id', async (req, res, next) => {
   const id = req.params.id;
@@ -335,7 +335,7 @@ router.put('/api/content/done/:id', async (req, res, next) => {
 })
 
 /*
- * Unchecks the homework
+ * Uncheck the homework
  */
 router.delete('/api/content/done/:id', async (req, res, next) => {
   const id = req.params.id;
@@ -371,19 +371,20 @@ router.post('/api/content/comment', async (req, res, next) => {
     {user: 1})).user;
 
   // Insert comment
-  const { insertedId } = await db.commentsCollection().insertOne(Object.assign(req, {
+  const { insertedId } = await db.commentsCollection().insertOne({
+    ...req.body,
     user: req.payload.username,
     createDate: new Date()
-  }))
+  })
 
   // Send push notification
-  await sendNotifications(`Přidán nový komentář na úkol "${homework.name}" od uživatele ${fullName}`, "", `/homework/${req.homework}#${insertedId.toString()}`, subscriptions)
+  await sendNotifications(`Přidán nový komentář na úkol "${homework.name}" od uživatele ${fullName}`, "", `/homework/${req.body.homework}#${insertedId.toString()}`, subscriptions)
 
   res.json({ msg: "Success" })
 })
 
 /*
- * Returns array of subjects
+ * Return array of subjects
  */
 router.get('/api/content/subjects', async (req, res, next) => {
   let result = await db.subjectsCollection().find({}).toArray();
@@ -391,7 +392,7 @@ router.get('/api/content/subjects', async (req, res, next) => {
 })
 
 /*
- * Returns image from the database
+ * Return image from the database
  */
 router.get('/api/content/images/:id', async (req, res, next) => {
   const id = req.params.id
@@ -402,7 +403,7 @@ router.get('/api/content/images/:id', async (req, res, next) => {
 })
 
 /*
- * Inserts images to the database uploaded in base64 format
+ * Insert images to the database uploaded in base64 format
  */
 router.post('/api/content/images', async (req, res, next) => {
   // Upload multiple images
@@ -418,7 +419,7 @@ router.post('/api/content/images', async (req, res, next) => {
 })
 
 /*
- * Changes user preferences
+ * Change user preferences
  */
 router.post('/api/settings', async (req, res, next) => {
   const valueWhitelist = ["notifyAbout", "mutedUsers"];
@@ -443,7 +444,7 @@ router.get('/api/settings', async (req, res, next) => {
 })
 
 /*
- * Adds push subscription
+ * Add push subscription
  */
 router.post('/api/settings/push', async (req, res, next) => {
   await db.usersCollection().updateOne(
@@ -455,7 +456,7 @@ router.post('/api/settings/push', async (req, res, next) => {
 })
 
 /*
- * Removes sent push subscription
+ * Remove sent push subscription
  */
 router.delete('/api/settings/push', async (req, res, next) => {
   await db.usersCollection().updateOne(
@@ -470,6 +471,7 @@ app.use(log)
 app.use(router)
 
 app.use(function(err, req, res, next){
+  console.error(err, err.toString())
   req.error = err;
   res.status(err.status || 500);
   res.send(err.message);
