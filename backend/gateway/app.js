@@ -100,7 +100,7 @@ app.set('trust proxy', true)
 /*
  * Check if user is authorized before accessing content
  */
-app.use('/api/content', (req, res, next) => {
+app.use(['/api/content', '/api/settings'], (req, res, next) => {
   req.payload = jwtExtract(req.cookies);
   if (!req.payload) {
     throw (err(401, "Unauthorized"))
@@ -437,7 +437,7 @@ router.post('/api/settings', async (req, res, next) => {
 router.get('/api/settings', async (req, res, next) => {
   const valueWhitelist = ["notifyAbout", "mutedUsers"];
 
-  const fromDatabase = (await db.usersCollection().findOne({username: req.payload.username}, { password: 0, hashedPassword: 0 }))
+  const fromDatabase = (await db.usersCollection().findOne({"username": req.payload.username}, { "password": 0, "hashedPassword": 0 }))
 
   const results = Object.fromEntries(Object.entries(fromDatabase).filter(([key, value]) => valueWhitelist.includes(key)))
   res.json(results)
