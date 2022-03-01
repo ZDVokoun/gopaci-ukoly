@@ -423,10 +423,10 @@ router.post('/api/content/images', async (req, res, next) => {
  */
 router.post('/api/settings', async (req, res, next) => {
   const valueWhitelist = ["notifyAbout", "mutedUsers"];
-  if (typeof req.body !== "object" && !req.body.settings && !passesWhitelist(req.settings, valueWhitelist))
+  if (typeof req.body !== "object" && !req.body.settings && !passesWhitelist(req.body.settings, valueWhitelist))
     throw (err(400, "Bad request"))
 
-  await db.usersCollection().updateOne({username: req.payload.username}, { $set: req.settings })
+  await db.usersCollection().updateOne({username: req.payload.username}, { $set: req.body.settings })
 
   res.json({ msg: "Success" })
 })
@@ -449,7 +449,7 @@ router.get('/api/settings', async (req, res, next) => {
 router.post('/api/settings/push', async (req, res, next) => {
   await db.usersCollection().updateOne(
     {username: req.payload.username},
-    { $addToSet: {subscriptions: req.subscription} }
+    { $addToSet: {subscriptions: req.body.subscription} }
   )
 
   res.json({msg: "Success"})
