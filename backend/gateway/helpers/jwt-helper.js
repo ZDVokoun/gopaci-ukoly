@@ -21,7 +21,9 @@ function createJwtCookie(userId, username) {
         "-----BEGIN RSA PRIVATE KEY-----\n" +
         process.env.JWT_SECRET_KEY +
         "\n-----END RSA PRIVATE KEY-----";
-    
+
+    let expiresDate = new Date()
+    expiresDate.setDate(expiresDate.getDate() + 14)
     const token = jwt.sign({userId, username}, secretKey, {
         algorithm: "RS256",
         expiresIn: "14 days"
@@ -29,7 +31,8 @@ function createJwtCookie(userId, username) {
     const jwtCookie = cookie.serialize("jwt", token, {
         secure: process.env.NETLIFY_DEV !== "true",
         httpOnly: true,
-        path: "/"
+        path: "/",
+        expires: expiresDate
     })
     return jwtCookie;
 }
