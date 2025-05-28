@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import http from "../helpers/http-helper";
 
 const pushServerPublicKey =
-  "***REMOVED***";
+  "BFzA76nvaPbtxKfAtgI9Ankc1l-IuKeyciRfFMWalSwDNyP1SfzrRwB2EinHBkjgpxQG9Vp_N5TJ1S4n_b-VdoE";
 
 /**
  * checks if Push notification and service workers are supported by your browser
